@@ -8,4 +8,6 @@
     <string name="default_image_content_description">Poster</string>
 
     <!-- Home Screen -->
+    <string name="most_popular_description">Most Popular</string>
+    <string name="top_rated_description">Top Rated</string>
 </resources>

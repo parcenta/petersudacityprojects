@@ -50,6 +50,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         MovieItem item = mItemList.get(position);
         Picasso.with(mContext)
                 .load(item.moviePosterUrl())
+                .error(R.drawable.ic_loading_error)
                 .into(holder.posterImageView);
     }
 

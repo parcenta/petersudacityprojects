@@ -3,23 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     >
     <ImageView
         android:id="@+id/poster_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:contentDescription="@string/default_image_content_description"
-        tools:src="@mipmap/ic_launcher"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="@color/colorPrimary"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:maxLines="1"
-        android:ellipsize="end"
-        tools:text="Movie with a very large name"
-        android:layout_gravity="bottom"/>
+        tools:src="@drawable/ic_loading_error"/>
 </FrameLayout>

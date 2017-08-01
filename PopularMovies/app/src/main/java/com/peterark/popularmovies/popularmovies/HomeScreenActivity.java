@@ -12,7 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
+import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
+import com.peterark.popularmovies.popularmovies.utils.NetworkUtils;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +86,22 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         @Override
         protected List<MovieItem> doInBackground(Void... params) {
-            List<MovieItem> itemList = new ArrayList<>();
-            itemList.add(new MovieItem.Builder().withMovieId(1).withMovieName("Pelicula 1").withMoviePosterUrl("http://www.theflea.co.nz/wp-content/uploads/2010/02/star-trek-movie-poster.jpg").build());
-            itemList.add(new MovieItem.Builder().withMovieId(2).withMovieName("Pelicula 2").withMoviePosterUrl("http://gdj.graphicdesignjunction.com/wp-content/uploads/2011/12/grey-movie-poster.jpg").build());
-            itemList.add(new MovieItem.Builder().withMovieId(3).withMovieName("Pelicula 3").withMoviePosterUrl("http://img.moviepostershop.com/the-hangover-movie-poster-2009-1020488737.jpg").build());
-            return itemList;
+
+            // Get the Url depending in the request mode (movies ordered by most_popular or top_rated).
+            URL weatherRequestUrl = NetworkUtils.buildUrl(orderMode);
+
+            try {
+                String response = NetworkUtils
+                        .getResponseFromHttpUrl(weatherRequestUrl);
+
+                Log.d(TAG,"JsonString Response: " + response);
+
+                return MovieHelperUtils.getMovieListFromJson(response);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
 
         @Override
