@@ -1,15 +1,11 @@
 package com.peterark.popularmovies.popularmovies.models;
 
-/**
- * Created by PETER on 26/7/2017.
- */
-
 // Used to represent each item of the Movie List in the Home Screen.
 public class MovieItem {
 
-    private int movieId;
-    private String movieName;
-    private String moviePosterUrl;
+    private final int movieId;
+    private final String movieName;
+    private final String moviePosterUrl;
 
     private MovieItem(int movieId, String movieName, String moviePosterUrl){
         this.movieId        = movieId;

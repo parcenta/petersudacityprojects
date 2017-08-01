@@ -3,7 +3,7 @@
 
 
     <!-- General Strings -->
-    <string name="error_ocurred">An error has ocurred.\nPlease try again.</string>
+    <string name="error_occurred">An error has occurred.\nPlease try again.</string>
     <string name="no_movies_found">No movies found.</string>
     <string name="default_image_content_description">Poster</string>
 

@@ -5,10 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
+
+    <!-- In a previous personal project, I Used the
+        (scaleType = fitCenter) + (adjustViewBounds = true) combination
+        to show the image in full width and keeping the aspect ratio.
+        If there is a better way, please let me know. Thanks =)-->
     <ImageView
         android:id="@+id/poster_holder"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:minHeight="150dp"
         android:contentDescription="@string/default_image_content_description"
         tools:src="@drawable/ic_loading_error"/>
 </FrameLayout>

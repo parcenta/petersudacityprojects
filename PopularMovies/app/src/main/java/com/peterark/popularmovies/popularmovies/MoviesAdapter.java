@@ -1,7 +1,6 @@
 package com.peterark.popularmovies.popularmovies;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by PETER on 26/7/2017.
- */
-
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder>{
 
-    private Context mContext;
+    private final Context mContext;
 
     private List<MovieItem> mItemList;
 
@@ -46,11 +41,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     }
 
     @Override
-    public void onBindViewHolder(MoviesAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(final MoviesAdapterViewHolder holder, int position) {
         MovieItem item = mItemList.get(position);
         Picasso.with(mContext)
-                .load(item.moviePosterUrl())
-                .error(R.drawable.ic_loading_error)
+                .load(item.moviePosterUrl())                    // Loading ImageUrl
+                .placeholder(R.drawable.ic_image_placeholder)   // PlaceHolder Image (until loading finishes)
+                .error(R.drawable.ic_loading_error)             // Error Image (if loading fails)
                 .into(holder.posterImageView);
     }
 
@@ -61,13 +57,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public ImageView posterImageView;
+        private final ImageView posterImageView;
 
-        public MoviesAdapterViewHolder(View view){
+        private MoviesAdapterViewHolder(View view){
             super(view);
 
             // Get Layout items reference
-            posterImageView = (ImageView) view.findViewById(R.id.poster_holder);
+            posterImageView             = (ImageView) view.findViewById(R.id.poster_holder);
 
             // TODO: Give On Click Behaviour
             view.setOnClickListener(null);

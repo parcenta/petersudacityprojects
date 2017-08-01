@@ -9,13 +9,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by PETER on 30/7/2017.
- */
 
 public class MovieHelperUtils {
 
-    public final static String imageBaseUrl = "http://image.tmdb.org/t/p/w185";
+    private final static String imageBaseUrl = "http://image.tmdb.org/t/p/w185";
 
     public static List<MovieItem> getMovieListFromJson(String movieJsonString) throws JSONException {
 

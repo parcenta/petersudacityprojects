@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -16,26 +15,25 @@ import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 import com.peterark.popularmovies.popularmovies.utils.NetworkUtils;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
-    private String TAG = this.getClass().getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
 
     // Loading Movies AsyncTask
-    LoadMoviesTask loadMoviesTask;
+    private LoadMoviesTask loadMoviesTask;
 
     // Layout Items
-    RecyclerView moviesRecyclerView;
-    ProgressBar progressBar;
-    TextView errorOcurredTextView;
-    TextView noMoviesAvailableTextView;
+    private RecyclerView moviesRecyclerView;
+    private ProgressBar progressBar;
+    private TextView errorOccurredTextView;
+    private TextView noMoviesAvailableTextView;
 
     // Values
-    String orderMode;
-    MoviesAdapter adapter;
-    List<MovieItem> moviesList;
+    private String orderMode;
+    private MoviesAdapter adapter;
+    private List<MovieItem> moviesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +43,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         // Get Layout items
         moviesRecyclerView          = (RecyclerView) findViewById(R.id.movies_recycler_view);
         progressBar                 = (ProgressBar) findViewById(R.id.loading_movies_progress_bar);
-        errorOcurredTextView        = (TextView) findViewById(R.id.error_text_view);
+        errorOccurredTextView       = (TextView) findViewById(R.id.error_text_view);
         noMoviesAvailableTextView   = (TextView)  findViewById(R.id.no_movies_found_text_view);
 
         // Setting adapter
@@ -66,6 +64,15 @@ public class HomeScreenActivity extends AppCompatActivity {
             loadMoviesTask = new LoadMoviesTask();
             loadMoviesTask.execute();
         //}
+
+        // Show in the Action Bar Title the OrderMode selected.
+        refreshActionBarTitle();
+
+    }
+
+    private void refreshActionBarTitle(){
+        String orderModeDescription = Constants.orderModeDescription(this,orderMode);
+        getSupportActionBar().setTitle(orderModeDescription); // I manage the possible NullPointer inside the above method.
     }
 
     // --------------------------------------------------------
@@ -77,7 +84,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         protected void onPreExecute() {
             // First Hide the RecyclerView and the Error Message.
             moviesRecyclerView.setVisibility(View.INVISIBLE);
-            errorOcurredTextView.setVisibility(View.INVISIBLE);
+            errorOccurredTextView.setVisibility(View.INVISIBLE);
             noMoviesAvailableTextView.setVisibility(View.INVISIBLE);
 
             // Show Progress Bar.
@@ -106,7 +113,6 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<MovieItem> itemList) {
-            Log.d(TAG,"ItemList size: " + itemList.size());
 
             // Hide the Progress Bar
             progressBar.setVisibility(View.INVISIBLE);
@@ -117,13 +123,14 @@ public class HomeScreenActivity extends AppCompatActivity {
 
             // Depending if the list was loaded correctly, we show it o
             if(moviesList!=null) {
+                Log.d(TAG,"ItemList size: " + itemList.size());
                 if (moviesList.size()>0)
                     moviesRecyclerView.setVisibility(View.VISIBLE);
                 else
                     noMoviesAvailableTextView.setVisibility(View.VISIBLE);
             }
             else
-                errorOcurredTextView.setVisibility(View.VISIBLE);
+                errorOccurredTextView.setVisibility(View.VISIBLE);
 
         }
     }

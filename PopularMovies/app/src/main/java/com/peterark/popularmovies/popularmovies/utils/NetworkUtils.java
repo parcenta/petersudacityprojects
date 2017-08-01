@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.peterark.popularmovies.popularmovies.Constants;
-import com.peterark.popularmovies.popularmovies.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +13,6 @@ import java.net.URL;
 import java.util.Scanner;
 
 import static android.content.ContentValues.TAG;
-
-/**
- * Created by PETER on 27/7/2017.
- */
 
 public class NetworkUtils {
 
@@ -67,7 +62,7 @@ public class NetworkUtils {
 
     /**
      * This method returns the entire result from the HTTP response.
-     * Source:  Udacitys Sunshine Project
+     * Source:  Udacity Sunshine Project
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

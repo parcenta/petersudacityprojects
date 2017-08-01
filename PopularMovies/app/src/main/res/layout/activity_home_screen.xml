@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,7 +24,7 @@
         android:visibility="invisible"
         />
 
-    <!-- An Error Ocurred Message -->
+    <!-- An Error Occurred Message -->
     <TextView
         android:id="@+id/error_text_view"
         android:layout_width="wrap_content"
@@ -33,7 +32,7 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:visibility="invisible"
-        android:text="@string/error_ocurred"/>
+        android:text="@string/error_occurred"/>
 
     <!-- No movies found Message -->
     <TextView
@@ -43,6 +42,6 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:visibility="invisible"
-        android:text="@string/error_ocurred"/>
+        android:text="@string/no_movies_found"/>
 
 </FrameLayout>
