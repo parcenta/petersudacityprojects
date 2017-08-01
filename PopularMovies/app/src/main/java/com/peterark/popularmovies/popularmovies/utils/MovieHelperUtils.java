@@ -39,7 +39,6 @@ public class MovieHelperUtils {
 
             moviesList.add(new MovieItem.Builder()
                                         .withMovieId(movieId)
-                                        .withMovieName(movieTitle)
                                         .withMoviePosterUrl(posterUrl)
                                         .build());
         }

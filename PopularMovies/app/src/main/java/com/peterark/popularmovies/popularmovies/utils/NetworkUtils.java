@@ -37,8 +37,11 @@ public class NetworkUtils {
             case Constants.ORDER_BY_MOST_POPULAR:
                 baseSearchUrl = SEARCH_MOVIES_BY_MOST_POPULAR_BASE_URL;
                 break;
-            default:
+            case Constants.ORDER_BY_TOP_RATED:
                 baseSearchUrl = SEARCH_MOVIES_BY_TOP_RATED_BASE_URL;
+                break;
+            default:
+                return null;
         }
 
         // Began to build the Uri with base url.

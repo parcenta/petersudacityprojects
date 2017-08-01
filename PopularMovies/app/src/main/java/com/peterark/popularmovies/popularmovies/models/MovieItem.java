@@ -1,25 +1,55 @@
 package com.peterark.popularmovies.popularmovies.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 // Used to represent each item of the Movie List in the Home Screen.
-public class MovieItem {
+public class MovieItem implements Parcelable{
 
     private final int movieId;
-    private final String movieName;
     private final String moviePosterUrl;
 
-    private MovieItem(int movieId, String movieName, String moviePosterUrl){
+    private MovieItem(int movieId, String moviePosterUrl){
         this.movieId        = movieId;
-        this.movieName      = movieName;
         this.moviePosterUrl = moviePosterUrl;
     }
+
+    // ---------------------------------
+    // Parcelable Methods
+    // ---------------------------------
+    private MovieItem(Parcel in){
+        movieId         = in.readInt();
+        moviePosterUrl  = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(movieId);
+        parcel.writeString(moviePosterUrl);
+    }
+
+    public final Parcelable.Creator<MovieItem> CREATOR = new Creator<MovieItem>() {
+        @Override
+        public MovieItem createFromParcel(Parcel parcel) {
+            return new MovieItem(parcel);
+        }
+
+        @Override
+        public MovieItem[] newArray(int i) {
+            return new MovieItem[i];
+        }
+    };
 
     // ---------------------------------
     //  Getters
     // ---------------------------------
     public int movieId(){return this.movieId;}
-    public String movieName(){return this.movieName;}
     public String moviePosterUrl(){return this.moviePosterUrl;}
-
 
     // ---------------------------------
     //  Builder
@@ -27,22 +57,15 @@ public class MovieItem {
     public static class Builder {
 
         private int movieId;
-        private String movieName;
         private String moviePosterUrl;
 
         public Builder(){
             this.movieId        = 0;
-            this.movieName      = "";
             this.moviePosterUrl = "";
         }
 
         public Builder withMovieId(int movieId){
             this.movieId = movieId;
-            return this;
-        }
-
-        public Builder withMovieName(String movieName){
-            this.movieName = movieName;
             return this;
         }
 
@@ -53,7 +76,6 @@ public class MovieItem {
 
         public MovieItem build(){
             return new MovieItem(movieId,
-                                    movieName,
                                     moviePosterUrl);
         }
     }

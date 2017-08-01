@@ -7,6 +7,10 @@
     <string name="no_movies_found">No movies found.</string>
     <string name="default_image_content_description">Poster</string>
 
+    <!-- Menu Options -->
+    <string name="most_popular">Most Popular</string>
+    <string name="top_rated">Top Rated</string>
+
     <!-- Home Screen -->
     <string name="most_popular_description">Most Popular</string>
     <string name="top_rated_description">Top Rated</string>
