@@ -12,7 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.peterark.popularmovies.popularmovies.detailPanel.MovieDetailActivity;
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
 import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 import com.peterark.popularmovies.popularmovies.utils.NetworkUtils;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickHandler {
 
     //
     private final String TAG = this.getClass().getSimpleName();
@@ -59,7 +61,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         moviesRecyclerView.setLayoutManager(layoutManager);
         moviesRecyclerView.setHasFixedSize(true);
-        adapter = new MoviesAdapter(this);
+        adapter = new MoviesAdapter(this,this);
         moviesRecyclerView.setAdapter(adapter);
 
         // Check if there is a savedInstanceState. If there is then we recover the list.
@@ -130,6 +132,18 @@ public class HomeScreenActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(MovieItem item) {
+
+        if (item == null) {
+            Toast.makeText(this, getString(R.string.error_occurred), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Launch the MovieDetailActivity with the selected movieId.
+        MovieDetailActivity.launch(this,item.movieId());
+    }
+
     // --------------------------------------------------------
     //  Loading Movies AsyncTask
     // --------------------------------------------------------
@@ -153,7 +167,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         protected ArrayList<MovieItem> doInBackground(Void... params) {
 
             // Get the Url depending in the request mode (movies ordered by most_popular or top_rated).
-            URL weatherRequestUrl = NetworkUtils.buildUrl(orderMode);
+            URL weatherRequestUrl = NetworkUtils.buildUrl(orderMode,null);
 
             try {
                 String response = NetworkUtils

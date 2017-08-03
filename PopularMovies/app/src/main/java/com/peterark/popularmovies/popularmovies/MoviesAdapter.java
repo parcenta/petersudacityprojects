@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.peterark.popularmovies.popularmovies.models.Movie;
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
 import com.squareup.picasso.Picasso;
 
@@ -15,12 +16,18 @@ import java.util.List;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder>{
 
     private final Context mContext;
-
+    private final OnMovieClickHandler mOnClickHandler;
     private List<MovieItem> mItemList;
 
-    public MoviesAdapter(Context context){
+    public MoviesAdapter(Context context,OnMovieClickHandler handler ){
         this.mContext = context;
+        this.mOnClickHandler = handler;
     }
+
+    public interface OnMovieClickHandler{
+        public void onClick(MovieItem item);
+    }
+
 
     public void setItemList(List<MovieItem> itemList){
         this.mItemList = itemList;
@@ -65,13 +72,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
             // Get Layout items reference
             posterImageView             = (ImageView) view.findViewById(R.id.poster_holder);
 
-            // TODO: Give On Click Behaviour
-            view.setOnClickListener(null);
+            // Set On Click Listener
+            view.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            int adapterPosition = getAdapterPosition();
+            MovieItem item = mItemList.get(adapterPosition);
+            mOnClickHandler.onClick(item);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.peterark.popularmovies.popularmovies.utils;
 
+import com.peterark.popularmovies.popularmovies.models.Movie;
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
 
 import org.json.JSONArray;
@@ -44,6 +45,29 @@ public class MovieHelperUtils {
         }
 
         return moviesList;
+
+
+    }
+
+
+    public static Movie getMovieDetailFromJson(String movieDetailJsonString) throws JSONException {
+
+        // Convert the JsonString to JsonObject.
+        JSONObject movieDetailJson = new JSONObject(movieDetailJsonString);
+
+        // Get Values from JSON.
+        String movieTitle           = movieDetailJson.getString("title");
+        String movieReleaseDate     = movieDetailJson.getString("release_date");
+        int movieRating             = movieDetailJson.getInt("vote_average");
+        String movieSynopsis        = movieDetailJson.getString("overview");;
+        String moviePosterUrl       = imageBaseUrl.concat(movieDetailJson.getString("poster_path"));
+
+        return new Movie.Builder().withMovieTitle(movieTitle)
+                                    .withMovieSynopsis(movieSynopsis)
+                                    .withMoviePosterUrl(moviePosterUrl)
+                                    .withMovieRating(movieRating)
+                                    .withMovieReleaseDate(movieReleaseDate)
+                                    .build();
 
 
     }

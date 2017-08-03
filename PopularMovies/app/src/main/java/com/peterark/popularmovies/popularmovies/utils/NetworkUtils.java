@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Scanner;
 
 import static android.content.ContentValues.TAG;
@@ -17,8 +18,9 @@ import static android.content.ContentValues.TAG;
 public class NetworkUtils {
 
     // Base URLs
-    private static final String SEARCH_MOVIES_BY_MOST_POPULAR_BASE_URL  = "http://api.themoviedb.org/3/movie/popular";
-    private static final String SEARCH_MOVIES_BY_TOP_RATED_BASE_URL     = "http://api.themoviedb.org/3/movie/top_rated";
+    private static final String MOVIE_DB_BASE_URL                       = "http://api.themoviedb.org/3/movie/";
+    private static final String SEARCH_MOVIES_BY_MOST_POPULAR_BASE_URL  = MOVIE_DB_BASE_URL + "popular";
+    private static final String SEARCH_MOVIES_BY_TOP_RATED_BASE_URL     = MOVIE_DB_BASE_URL + "top_rated";
 
     // Query Parameters
     private static final String API_KEY_QUERY = "api_key";
@@ -27,7 +29,7 @@ public class NetworkUtils {
 
 
 
-    public static URL buildUrl(String requestMode) {
+    public static URL buildUrl(String requestMode, List<String> params) {
 
         // Init Base Search URL.
         String baseSearchUrl;
@@ -37,8 +39,18 @@ public class NetworkUtils {
             case Constants.ORDER_BY_MOST_POPULAR:
                 baseSearchUrl = SEARCH_MOVIES_BY_MOST_POPULAR_BASE_URL;
                 break;
+
             case Constants.ORDER_BY_TOP_RATED:
                 baseSearchUrl = SEARCH_MOVIES_BY_TOP_RATED_BASE_URL;
+                break;
+
+            case Constants.SEARCH_MOVIE_DETAIL_BY_ID:
+                if(params == null || params.isEmpty())
+                    return null;
+
+                // Add the MovieId at the end of the URL. Example: "http://api.themoviedb.org/3/movie/123456"
+                // As specified in the Documentation API (https://developers.themoviedb.org/3/movies?group=movies)
+                baseSearchUrl = MOVIE_DB_BASE_URL + params.get(0).trim(); //
                 break;
             default:
                 return null;
