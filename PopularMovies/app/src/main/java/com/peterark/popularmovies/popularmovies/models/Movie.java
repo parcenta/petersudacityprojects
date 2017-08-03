@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.provider.SyncStateContract;
 
 import com.peterark.popularmovies.popularmovies.Constants;
+import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 
 public class Movie implements Parcelable {
 
@@ -104,7 +105,7 @@ public class Movie implements Parcelable {
         }
 
         public Builder withMovieReleaseDate(String movieReleaseDate){
-            this.movieReleaseDate = movieReleaseDate;
+            this.movieReleaseDate = MovieHelperUtils.getDateAsMMMDDYYYYWithMonthName(movieReleaseDate);
             return this;
         }
 

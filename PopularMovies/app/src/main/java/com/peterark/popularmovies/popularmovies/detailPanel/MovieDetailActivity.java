@@ -4,8 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.PersistableBundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +30,7 @@ import java.util.List;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
+    private final String TAG = this.getClass().getSimpleName();
 
     // Intent Extras names
     public final static String MOVIE_ID = "MOVIE_ID";
@@ -72,6 +77,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        setupActionBar();
 
         // Get Layout Items
         progressBar             = (ProgressBar) findViewById(R.id.loading_movie_detail_progress_bar);
@@ -108,6 +114,26 @@ public class MovieDetailActivity extends AppCompatActivity {
             mMovieId = sourceIntent.getIntExtra(MOVIE_ID,0);
     }
 
+    private void setupActionBar() {
+        // This is just to show a Back Button in the Action bar.
+        // I used this in previous personal project, because Im afraid im not an expert in Toolbars yet. =)
+        ActionBar ab = getSupportActionBar();
+        if(ab!=null)
+            ab.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int itemId = item.getItemId();
+        switch (itemId){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     // --------------------------------------------------------
     //  Loading Movies AsyncTask
@@ -116,12 +142,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // First Hide the MovieDetailContainer and the Error Message.
-            movieDetailContainer.setVisibility(View.INVISIBLE);
-            errorOcurredTextView.setVisibility(View.INVISIBLE);
-
-            // Show Progress Bar.
-            progressBar.setVisibility(View.VISIBLE);
+            showProgressBarInUI();
         }
 
         @Override
@@ -179,6 +200,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     }
 
+
     private void showErrorMessageInUI(){
         // Hide Movie Detail and Progress Bar.
         movieDetailContainer.setVisibility(View.INVISIBLE);
@@ -206,4 +228,18 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieDetailContainer.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        // If MovieDetail is not loaded yet, then avoid it to save it in the SaveInstance while screen rotates.
+        // This will make that the if-clause (with savedInstanceState) in the OnCreate, to force to call again the WS.
+        if(movieDetail==null) {
+            Log.d(TAG,"Avoiding saving moviesList in savedInstanceState...");
+            super.onSaveInstanceState(outState);
+            return;
+        }
+
+        outState.putParcelable(MOVIE_DETAIL,movieDetail);
+        super.onSaveInstanceState(outState);
+    }
 }

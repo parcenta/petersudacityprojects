@@ -69,6 +69,8 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
                 && savedInstanceState.containsKey(ORDER_BY)
                 && savedInstanceState.containsKey(MOVIES_LIST)) {
 
+            Log.d(TAG,"savedInstance variable will be recovered");
+
             // Get SavedInstance variables
             orderMode   = savedInstanceState.getString(ORDER_BY);
             moviesList  = savedInstanceState.getParcelableArrayList(MOVIES_LIST);
@@ -77,6 +79,7 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
             refreshActionBarTitle();
             adapter.setItemList(moviesList);
         }else{
+            Log.d(TAG,"savedInstance variables are not available. We load the data from WS...");
             // Set the Order Mode initially as Most Popular.
             orderMode = Constants.ORDER_BY_MOST_POPULAR;
 
@@ -151,6 +154,10 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
 
         @Override
         protected void onPreExecute() {
+
+            // Set the MoviesList to null.
+            moviesList = null;
+
             // Empty (null) the Item List inside the adapter.
             adapter.setItemList(null);
 
@@ -175,9 +182,12 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
 
                 Log.d(TAG,"JsonString Response: " + response);
 
-                return new ArrayList<>(MovieHelperUtils.getMovieListFromJson(response));
+                List<MovieItem> itemList = MovieHelperUtils.getMovieListFromJson(response);
+
+                return new ArrayList<>(itemList);
 
             } catch (Exception e) {
+                Log.d(TAG,"Exception was thrown when loading movies...");
                 e.printStackTrace();
                 return null;
             }
@@ -220,6 +230,13 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        // Avoid saving in the instanceState the resultantMovieList.
+        if(moviesList==null) {
+            Log.d(TAG,"Avoiding saving moviesList in savedInstanceState...");
+            super.onSaveInstanceState(outState);
+            return;
+        }
+
         outState.putString(ORDER_BY,orderMode);
         outState.putParcelableArrayList(MOVIES_LIST,moviesList);
         super.onSaveInstanceState(outState);

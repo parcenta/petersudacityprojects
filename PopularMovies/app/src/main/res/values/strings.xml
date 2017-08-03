@@ -14,4 +14,8 @@
     <!-- Home Screen -->
     <string name="most_popular_description">Most Popular</string>
     <string name="top_rated_description">Top Rated</string>
+
+    <!-- Detail Screen -->
+    <string name="rating">Rating</string>
+    <string name="release_date">Release Date (yyyy-mm-dd)</string>
 </resources>

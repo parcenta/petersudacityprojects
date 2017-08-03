@@ -7,8 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 
 public class MovieHelperUtils {
@@ -46,7 +51,6 @@ public class MovieHelperUtils {
 
         return moviesList;
 
-
     }
 
 
@@ -70,5 +74,18 @@ public class MovieHelperUtils {
                                     .build();
 
 
+    }
+
+    // Converting one Date (as string) to another format.
+    // As specified in https://stackoverflow.com/questions/12503527/how-do-i-convert-the-date-from-one-format-to-another-date-object-in-another-form
+    public static String getDateAsMMMDDYYYYWithMonthName(String dateStringAsYYYYMMDD){
+        try {
+            DateFormat originalFormat = new SimpleDateFormat("yyyy-mm-dd",Locale.ENGLISH);
+            DateFormat targetFormat = new SimpleDateFormat("MMM dd, yyyy",Locale.ENGLISH);
+            Date date = originalFormat.parse(dateStringAsYYYYMMDD);
+            return targetFormat.format(date);
+        }catch (Exception e){
+            return dateStringAsYYYYMMDD;
+        }
     }
 }
