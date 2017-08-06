@@ -104,7 +104,7 @@ public class NetworkUtils {
         }
     }
 
-
+    // Taken from StackOverflow post. https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
     private static boolean isOnline(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
