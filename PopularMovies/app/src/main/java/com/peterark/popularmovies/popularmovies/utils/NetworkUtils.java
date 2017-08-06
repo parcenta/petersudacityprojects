@@ -1,11 +1,13 @@
 package com.peterark.popularmovies.popularmovies.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
 import com.peterark.popularmovies.popularmovies.Constants;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -79,7 +81,11 @@ public class NetworkUtils {
      * This method returns the entire result from the HTTP response.
      * Source:  Udacity Sunshine Project
      */
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
+    public static String getResponseFromHttpUrl(Context context, URL url) throws Exception {
+
+        if(!isOnline(context))
+            return null;
+
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
@@ -96,5 +102,13 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+
+    private static boolean isOnline(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

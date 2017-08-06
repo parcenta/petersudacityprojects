@@ -2,18 +2,17 @@ package com.peterark.popularmovies.popularmovies.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.SyncStateContract;
 
 import com.peterark.popularmovies.popularmovies.Constants;
 import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 
 public class Movie implements Parcelable {
 
-    private String movieTitle;
-    private String movieReleaseDate;
-    private String movieRating;
-    private String movieSynopsis;
-    private String moviePosterUrl;
+    private final String movieTitle;
+    private final String movieReleaseDate;
+    private final String movieRating;
+    private final String movieSynopsis;
+    private final String moviePosterUrl;
 
     private Movie(String movieTitle, String movieReleaseDate, String movieRating, String movieSynopsis, String moviePosterUrl) {
         this.movieTitle = movieTitle;
@@ -109,7 +108,7 @@ public class Movie implements Parcelable {
             return this;
         }
 
-        public Builder withMovieRating(int movieRating){
+        public Builder withMovieRating(double movieRating){
             this.movieRating = movieRating + "/" + Constants.MAX_MOVIE_RATING;
             return this;
         }

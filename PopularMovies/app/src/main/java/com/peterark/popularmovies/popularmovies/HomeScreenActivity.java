@@ -1,7 +1,6 @@
 package com.peterark.popularmovies.popularmovies;
 
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,7 +20,6 @@ import com.peterark.popularmovies.popularmovies.utils.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickHandler {
@@ -56,6 +54,14 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
         progressBar                 = (ProgressBar) findViewById(R.id.loading_movies_progress_bar);
         errorOccurredTextView       = (TextView) findViewById(R.id.error_text_view);
         noMoviesAvailableTextView   = (TextView)  findViewById(R.id.no_movies_found_text_view);
+
+        // Set Extra Behaviour to Layout items
+        errorOccurredTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadMovies();
+            }
+        });
 
         // Setting adapter
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -178,7 +184,10 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
 
             try {
                 String response = NetworkUtils
-                        .getResponseFromHttpUrl(weatherRequestUrl);
+                        .getResponseFromHttpUrl(HomeScreenActivity.this,weatherRequestUrl);
+
+                if(response==null)
+                    return null;
 
                 Log.d(TAG,"JsonString Response: " + response);
 

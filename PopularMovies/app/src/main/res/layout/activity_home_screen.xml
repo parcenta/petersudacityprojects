@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:visibility="invisible"
-        android:text="@string/error_occurred"/>
+        android:text="@string/error_occurred_press_here_to_try_again"/>
 
     <!-- No movies found Message -->
     <TextView
@@ -44,4 +44,4 @@
         android:visibility="invisible"
         android:text="@string/no_movies_found"/>
 
-</FrameLayout>
+</merge>

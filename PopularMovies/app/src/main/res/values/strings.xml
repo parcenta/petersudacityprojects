@@ -4,8 +4,10 @@
 
     <!-- General Strings -->
     <string name="error_occurred">An error has occurred.\nPlease try again.</string>
+    <string name="error_occurred_press_here_to_try_again">An error has occurred.\nPress here to try again.</string>
     <string name="no_movies_found">No movies found.</string>
     <string name="default_image_content_description">Poster</string>
+    <string name="not_available">N/A</string>
 
     <!-- Menu Options -->
     <string name="most_popular">Most Popular</string>
@@ -17,5 +19,5 @@
 
     <!-- Detail Screen -->
     <string name="rating">Rating</string>
-    <string name="release_date">Release Date (yyyy-mm-dd)</string>
+    <string name="release_date">Release Date</string>
 </resources>

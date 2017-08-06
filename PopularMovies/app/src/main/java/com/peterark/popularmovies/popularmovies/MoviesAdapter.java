@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.peterark.popularmovies.popularmovies.models.Movie;
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +24,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     }
 
     public interface OnMovieClickHandler{
-        public void onClick(MovieItem item);
+        void onClick(MovieItem item);
     }
 
 

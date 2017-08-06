@@ -2,9 +2,7 @@ package com.peterark.popularmovies.popularmovies.detailPanel;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.PersistableBundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -33,10 +30,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
 
     // Intent Extras names
-    public final static String MOVIE_ID = "MOVIE_ID";
+    private final static String MOVIE_ID = "MOVIE_ID";
 
     // Intent variables
-    public static int mMovieId;
+    private static int mMovieId;
 
     // Movie
     private Movie movieDetail;
@@ -45,17 +42,17 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static final String MOVIE_DETAIL = "MOVIE_DETAIL";
 
     // Asynctask
-    LoadMovieDetailTask loadMovieDetailTask;
+    private LoadMovieDetailTask loadMovieDetailTask;
 
     // Layout items
-    ProgressBar progressBar;
-    TextView errorOcurredTextView;
-    ScrollView movieDetailContainer;
-    TextView movieTitleTextView;
-    ImageView posterImageView;
-    TextView releaseDateTextView;
-    TextView ratingTextView;
-    TextView synopsisTextView;
+    private ProgressBar progressBar;
+    private TextView errorOccurredTextView;
+    private ScrollView movieDetailContainer;
+    private TextView movieTitleTextView;
+    private ImageView posterImageView;
+    private TextView releaseDateTextView;
+    private TextView ratingTextView;
+    private TextView synopsisTextView;
 
     /* -----------------------------------------------------------------
      * Launch Helper
@@ -64,7 +61,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         context.startActivity(launchIntent(context, movieId));
     }
 
-    public static Intent launchIntent(Context context, int movieId) {
+    private static Intent launchIntent(Context context, int movieId) {
 
         Class destinationActivity = MovieDetailActivity.class;
         Intent intent = new Intent(context, destinationActivity);
@@ -81,7 +78,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         // Get Layout Items
         progressBar             = (ProgressBar) findViewById(R.id.loading_movie_detail_progress_bar);
-        errorOcurredTextView    = (TextView) findViewById(R.id.error_text_view);;
+        errorOccurredTextView = (TextView) findViewById(R.id.error_text_view);
         movieDetailContainer    = (ScrollView) findViewById(R.id.movie_detail_container);
         movieTitleTextView      = (TextView) findViewById(R.id.movie_title_text_view);
         posterImageView         = (ImageView) findViewById(R.id.poster_holder);
@@ -91,6 +88,14 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         // Get Intent parameters variables
         getParameters();
+
+        // Set Extra Behaviour to Layout items.
+        errorOccurredTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadMovieDetail();
+            }
+        });
 
         // Load Data in Activity
         if(savedInstanceState!=null && savedInstanceState.containsKey(MOVIE_DETAIL)){
@@ -155,8 +160,10 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             try {
                 String response = NetworkUtils
-                        .getResponseFromHttpUrl(weatherRequestUrl);
+                        .getResponseFromHttpUrl(MovieDetailActivity.this, weatherRequestUrl);
 
+                if(response==null)
+                    return null;
 
                 return MovieHelperUtils.getMovieDetailFromJson(response);
 
@@ -207,13 +214,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
 
         // Show an Error message.
-        errorOcurredTextView.setVisibility(View.VISIBLE);
+        errorOccurredTextView.setVisibility(View.VISIBLE);
     }
 
     private void showProgressBarInUI(){
         // Hide Movie Detail and Progress Bar.
         movieDetailContainer.setVisibility(View.INVISIBLE);
-        errorOcurredTextView.setVisibility(View.INVISIBLE);
+        errorOccurredTextView.setVisibility(View.INVISIBLE);
 
         // Show an Error message.
         progressBar.setVisibility(View.VISIBLE);
@@ -222,7 +229,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void showMovieDetailContainerInUI(){
         // Hide Movie Detail and Progress Bar.
         progressBar.setVisibility(View.INVISIBLE);
-        errorOcurredTextView.setVisibility(View.INVISIBLE);
+        errorOccurredTextView.setVisibility(View.INVISIBLE);
 
         // Show an Error message.
         movieDetailContainer.setVisibility(View.VISIBLE);
@@ -232,7 +239,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
 
         // If MovieDetail is not loaded yet, then avoid it to save it in the SaveInstance while screen rotates.
-        // This will make that the if-clause (with savedInstanceState) in the OnCreate, to force to call again the WS.
+        // This will make that the if-clause (with savedInstanceState) in the OnCreate(), to force to call again the WS.
         if(movieDetail==null) {
             Log.d(TAG,"Avoiding saving moviesList in savedInstanceState...");
             super.onSaveInstanceState(outState);

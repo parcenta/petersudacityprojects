@@ -1,5 +1,7 @@
 package com.peterark.popularmovies.popularmovies.utils;
 
+import android.util.Log;
+
 import com.peterark.popularmovies.popularmovies.models.Movie;
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
 
@@ -13,10 +15,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 
 public class MovieHelperUtils {
+
+    private static final String TAG = MovieHelperUtils.class.getSimpleName();
 
     private final static String imageBaseUrl = "http://image.tmdb.org/t/p/w185";
 
@@ -40,7 +43,6 @@ public class MovieHelperUtils {
 
             // Extract Values from JsonObject.
             int movieId         = oneMovieObject.getInt("id");
-            String movieTitle   = oneMovieObject.getString("original_title");
             String posterUrl    = imageBaseUrl.concat(oneMovieObject.getString("poster_path"));
 
             moviesList.add(new MovieItem.Builder()
@@ -62,8 +64,8 @@ public class MovieHelperUtils {
         // Get Values from JSON.
         String movieTitle           = movieDetailJson.getString("title");
         String movieReleaseDate     = movieDetailJson.getString("release_date");
-        int movieRating             = movieDetailJson.getInt("vote_average");
-        String movieSynopsis        = movieDetailJson.getString("overview");;
+        double movieRating          = movieDetailJson.getDouble("vote_average");
+        String movieSynopsis        = movieDetailJson.getString("overview");
         String moviePosterUrl       = imageBaseUrl.concat(movieDetailJson.getString("poster_path"));
 
         return new Movie.Builder().withMovieTitle(movieTitle)
@@ -80,9 +82,11 @@ public class MovieHelperUtils {
     // As specified in https://stackoverflow.com/questions/12503527/how-do-i-convert-the-date-from-one-format-to-another-date-object-in-another-form
     public static String getDateAsMMMDDYYYYWithMonthName(String dateStringAsYYYYMMDD){
         try {
-            DateFormat originalFormat = new SimpleDateFormat("yyyy-mm-dd",Locale.ENGLISH);
-            DateFormat targetFormat = new SimpleDateFormat("MMM dd, yyyy",Locale.ENGLISH);
+            Log.d(TAG,"Converting date from: " + dateStringAsYYYYMMDD);
+            DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.getDefault());
+            DateFormat targetFormat = new SimpleDateFormat("MMM dd, yyyy",Locale.getDefault());
             Date date = originalFormat.parse(dateStringAsYYYYMMDD);
+            Log.d(TAG,"Original date: " + date);
             return targetFormat.format(date);
         }catch (Exception e){
             return dateStringAsYYYYMMDD;

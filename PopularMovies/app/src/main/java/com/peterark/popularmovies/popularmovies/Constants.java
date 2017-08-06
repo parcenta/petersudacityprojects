@@ -23,8 +23,10 @@ public class Constants {
         switch (orderMode){
             case ORDER_BY_TOP_RATED:
                 return context.getString(R.string.top_rated_description);
-            default:
+            case ORDER_BY_MOST_POPULAR:
                 return context.getString(R.string.most_popular_description);
+            default:
+                return context.getString(R.string.not_available);
         }
     }
 
