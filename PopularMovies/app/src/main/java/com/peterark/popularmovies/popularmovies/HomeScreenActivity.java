@@ -1,5 +1,6 @@
 package com.peterark.popularmovies.popularmovies;
 
+import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.peterark.popularmovies.popularmovies.databinding.ActivityHomeScreenBinding;
 import com.peterark.popularmovies.popularmovies.detailPanel.MovieDetailActivity;
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
 import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
@@ -29,15 +31,10 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
     private final String MOVIES_LIST  = "ITEM_LIST";
     private final String ORDER_BY   = "ORDER_BY";
 
+    private ActivityHomeScreenBinding mBinding;
 
     // Loading Movies AsyncTask
     private LoadMoviesTask loadMoviesTask;
-
-    // Layout Items
-    private RecyclerView moviesRecyclerView;
-    private ProgressBar progressBar;
-    private TextView errorOccurredTextView;
-    private TextView noMoviesAvailableTextView;
 
     // Values
     private String orderMode;
@@ -47,28 +44,24 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
 
-        // Get Layout items
-        moviesRecyclerView          = (RecyclerView) findViewById(R.id.movies_recycler_view);
-        progressBar                 = (ProgressBar) findViewById(R.id.loading_movies_progress_bar);
-        errorOccurredTextView       = (TextView) findViewById(R.id.error_text_view);
-        noMoviesAvailableTextView   = (TextView)  findViewById(R.id.no_movies_found_text_view);
+        // Set the Binding
+        mBinding = DataBindingUtil.setContentView(this,R.layout.activity_home_screen);
 
-        // Set Extra Behaviour to Layout items
-        errorOccurredTextView.setOnClickListener(new View.OnClickListener() {
+        // Setting adapter
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        mBinding.moviesRecyclerView.setLayoutManager(layoutManager);
+        mBinding.moviesRecyclerView.setHasFixedSize(true);
+        adapter = new MoviesAdapter(this,this);
+        mBinding.moviesRecyclerView.setAdapter(adapter);
+
+        // Set Retry Action on Error Message Textview.
+        mBinding.errorTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loadMovies();
             }
         });
-
-        // Setting adapter
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        moviesRecyclerView.setLayoutManager(layoutManager);
-        moviesRecyclerView.setHasFixedSize(true);
-        adapter = new MoviesAdapter(this,this);
-        moviesRecyclerView.setAdapter(adapter);
 
         // Check if there is a savedInstanceState. If there is then we recover the list.
         if(savedInstanceState != null
@@ -168,12 +161,12 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
             adapter.setItemList(null);
 
             // First Hide the RecyclerView and the Error Message.
-            moviesRecyclerView.setVisibility(View.INVISIBLE);
-            errorOccurredTextView.setVisibility(View.INVISIBLE);
-            noMoviesAvailableTextView.setVisibility(View.INVISIBLE);
+            mBinding.moviesRecyclerView.setVisibility(View.INVISIBLE);
+            mBinding.errorTextView.setVisibility(View.INVISIBLE);
+            mBinding.noMoviesFoundTextView.setVisibility(View.INVISIBLE);
 
             // Show Progress Bar.
-            progressBar.setVisibility(View.VISIBLE);
+            mBinding.loadingMoviesProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -206,7 +199,7 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
         protected void onPostExecute(ArrayList<MovieItem> itemList) {
 
             // Hide the Progress Bar
-            progressBar.setVisibility(View.INVISIBLE);
+            mBinding.loadingMoviesProgressBar.setVisibility(View.INVISIBLE);
 
             // Set the Adapter List.
             moviesList = itemList;
@@ -216,12 +209,12 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
             if(moviesList!=null) {
                 Log.d(TAG,"ItemList size: " + itemList.size());
                 if (moviesList.size()>0)
-                    moviesRecyclerView.setVisibility(View.VISIBLE);
+                    mBinding.moviesRecyclerView.setVisibility(View.VISIBLE);
                 else
-                    noMoviesAvailableTextView.setVisibility(View.VISIBLE);
+                    mBinding.noMoviesFoundTextView.setVisibility(View.VISIBLE);
             }
             else
-                errorOccurredTextView.setVisibility(View.VISIBLE);
+                mBinding.errorTextView.setVisibility(View.VISIBLE);
 
         }
     }

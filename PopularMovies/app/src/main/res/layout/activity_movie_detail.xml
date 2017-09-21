@@ -1,136 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context="com.peterark.popularmovies.popularmovies.detailPanel.MovieDetailActivity"
     >
-
-    <!-- Loading Movie Detail Progress Bar -->
-    <ProgressBar
-        android:id="@+id/loading_movie_detail_progress_bar"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        />
-
-    <!-- Error Occured Container -->
-    <TextView
-        android:id="@+id/error_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/error_occurred_press_here_to_try_again"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:visibility="invisible"/>
-
-
-    <!-- Movie Detail -->
-    <ScrollView
-        android:id="@+id/movie_detail_container"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Loading Movie Detail Progress Bar -->
+        <ProgressBar
+            android:id="@+id/loading_movie_detail_progress_bar"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            />
+
+        <!-- Error Occured Container -->
+        <TextView
+            android:id="@+id/error_text_view"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="@string/error_occurred_press_here_to_try_again"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="invisible"/>
 
 
-            <!-- Title -->
+        <!-- Movie Detail -->
+        <ScrollView
+            android:id="@+id/movie_detail_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:padding="16dp">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/movie_title_text_view"
+
+                <!-- Title -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="22sp"
-                    tools:text="The Lord of the Rings: The Fellowship of the Ring" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false">
-
-                <!-- Poster -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
-                    android:gravity="center"
-                    android:minHeight="150dp"
+                    android:background="@color/colorPrimary"
                     android:padding="16dp">
 
-                    <ImageView
-                        android:id="@+id/poster_holder"
+                    <TextView
+                        android:id="@+id/movie_title_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitCenter"
-                        android:contentDescription="@string/default_image_content_description"
-                        tools:src="@drawable/ic_image_placeholder" />
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        tools:text="The Lord of the Rings: The Fellowship of the Ring" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false">
+
+                    <!-- Poster -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.4"
+                        android:gravity="center"
+                        android:minHeight="150dp"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/poster_holder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="@string/default_image_content_description"
+                            tools:src="@drawable/ic_image_placeholder" />
+                    </LinearLayout>
+
+                    <!-- Detail -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.6"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- Release date -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/release_date"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/movie_release_date_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:textSize="20sp"
+                            tools:text="2012-11-28"/>
+
+                        <!-- User Rating -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/rating"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/movie_rating_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            tools:text="8.1/10" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <!-- Detail -->
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/movie_synopsis_text_view"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.6"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <!-- Release date -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/release_date"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/movie_release_date_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:textSize="20sp"
-                        tools:text="2012-11-28"/>
-
-                    <!-- User Rating -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/rating"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/movie_rating_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        tools:text="8.1/10" />
-
-                </LinearLayout>
+                    android:layout_marginBottom="8dp"
+                    android:padding="16dp"
+                    android:textSize="14sp"
+                    tools:text="The Lord of the Rings Movie is..." />
 
             </LinearLayout>
-
-            <!-- Detail -->
-            <TextView
-                android:id="@+id/movie_synopsis_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:padding="16dp"
-                android:textSize="14sp"
-                tools:text="The Lord of the Rings Movie is..." />
-
-        </LinearLayout>
-    </ScrollView>
-</merge>
+        </ScrollView>
+    </FrameLayout>
+</layout>
 
