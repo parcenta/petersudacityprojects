@@ -60,11 +60,11 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdap
 
         holder.mBinding.videoThumbnailTitle.setText(item.videoTitle);
 
-        /*Picasso.with(mContext)
-                .load(item.videoUrl)                    // Loading ImageUrl
-                .placeholder(R.drawable.ic_image_placeholder)   // PlaceHolder Image (until loading finishes)
-                .error(R.drawable.ic_loading_error)             // Error Image (if loading fails)
-                .into(holder.mBinding.video);*/
+        Picasso.with(mContext)
+                .load(item.videoUrlThumbnailUrl)                    // Loading ImageUrl
+                .placeholder(R.drawable.ic_play_arrow_white)   // PlaceHolder Image (until loading finishes)
+                .error(R.drawable.ic_play_arrow_white)             // Error Image (if loading fails)
+                .into(holder.mBinding.videoThumbnailImage);
 
     }
 

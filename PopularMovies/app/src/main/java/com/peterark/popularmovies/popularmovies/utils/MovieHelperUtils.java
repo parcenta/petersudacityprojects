@@ -2,7 +2,9 @@ package com.peterark.popularmovies.popularmovies.utils;
 
 import android.util.Log;
 
-import com.peterark.popularmovies.popularmovies.models.Movie;
+import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.ReviewItem;
+import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideoItem;
+import com.peterark.popularmovies.popularmovies.models.MovieDetail;
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
 
 import org.json.JSONArray;
@@ -57,7 +59,7 @@ public class MovieHelperUtils {
     }
 
 
-    public static Movie getMovieDetailFromJson(String movieDetailJsonString) throws JSONException {
+    public static MovieDetail getMovieDetailFromJson(String movieDetailJsonString) throws JSONException {
 
         // Convert the JsonString to JsonObject.
         JSONObject movieDetailJson = new JSONObject(movieDetailJsonString);
@@ -69,7 +71,7 @@ public class MovieHelperUtils {
         String movieSynopsis        = movieDetailJson.getString("overview");
         String moviePosterUrl       = imageBigBaseUrl.concat(movieDetailJson.getString("poster_path"));
 
-        return new Movie.Builder().withMovieTitle(movieTitle)
+        return new MovieDetail.Builder().withMovieTitle(movieTitle)
                                     .withMovieSynopsis(movieSynopsis)
                                     .withMoviePosterUrl(moviePosterUrl)
                                     .withMovieRating(movieRating)
@@ -77,6 +79,63 @@ public class MovieHelperUtils {
                                     .build();
 
 
+    }
+
+    public static List<VideoItem> getMovieDetailVideoListFromJson(String movieDetailVideoListJson) throws JSONException{
+
+        List<VideoItem> videoList = new ArrayList<>();
+
+        // Convert the JsonString to JsonObject.
+        JSONObject videoResponseJsonObject = new JSONObject(movieDetailVideoListJson);
+
+        // Now get the Results.
+        String videoResultsString = videoResponseJsonObject.getString("results");
+        Log.d("VideoResults",videoResultsString);
+
+        // Source: https://stackoverflow.com/questions/32252606/json-get-list-of-json-objects
+        JSONArray videoArray = new JSONArray(videoResultsString);
+        for (int i = 0; i < videoArray.length(); i++) { // Walk through the Array.
+            JSONObject oneVideoObject = videoArray.getJSONObject(i);
+            String videoSourceType = oneVideoObject.getString("site");
+
+            // Just double checking the Site is from Youtube Site.
+            if (videoSourceType.equals("YouTube")){
+                String videoTitle       = oneVideoObject.getString("type");
+                String videoYoutubeId   = oneVideoObject.getString("key").trim();
+                String videoUrlString   = videoYoutubeId.length() >0 ? "https://www.youtube.com/watch?v=" + videoYoutubeId : "";
+
+                String videoThumnailUrl = "http://img.youtube.com/vi/"+videoYoutubeId+"/0.jpg";
+
+
+                videoList.add(new VideoItem(videoTitle,videoUrlString,videoThumnailUrl));
+            }
+
+        }
+
+        return videoList;
+    }
+
+    public static List<ReviewItem> getMovieDetailReviewsListFromJson(String movieDetailReviewsListJson) throws JSONException{
+
+        List<ReviewItem> reviewList = new ArrayList<>();
+
+        // Convert the JsonString to JsonObject.
+        JSONObject reviewsResponseJsonObject = new JSONObject(movieDetailReviewsListJson);
+
+        // Now get the Results.
+        String reviewsResultsString = reviewsResponseJsonObject.getString("results");
+
+        // Now from the Results we parse it as JsonArray.
+        // Source: https://stackoverflow.com/questions/32252606/json-get-list-of-json-objects
+        JSONArray reviewArray = new JSONArray(reviewsResultsString);
+        for (int i = 0; i < reviewArray.length(); i++) {
+            JSONObject oneVideoObject = reviewArray.getJSONObject(i);
+            String reviewUserName       = oneVideoObject.getString("author");
+            String reviewUserCommentary = oneVideoObject.getString("content");
+            reviewList.add(new ReviewItem(reviewUserName,reviewUserCommentary));
+        }
+
+        return reviewList;
     }
 
     // Converting one Date (as string) to another format.

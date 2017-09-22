@@ -1,8 +1,10 @@
 package com.peterark.popularmovies.popularmovies.detailPanel;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +21,7 @@ import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.Revie
 import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.ReviewsAdapter;
 import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideoItem;
 import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideosAdapter;
-import com.peterark.popularmovies.popularmovies.models.Movie;
+import com.peterark.popularmovies.popularmovies.models.MovieDetail;
 import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 import com.peterark.popularmovies.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -39,7 +41,7 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
     private static int mMovieId;
 
     // Movie
-    private Movie movieDetail;
+    private MovieDetail movieDetailDetail;
 
     // For Saved Instance
     private static final String MOVIE_DETAIL = "MOVIE_DETAIL";
@@ -107,7 +109,7 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
 
         // Load Data in Activity
         if(savedInstanceState!=null && savedInstanceState.containsKey(MOVIE_DETAIL)){
-            movieDetail = savedInstanceState.getParcelable(MOVIE_DETAIL);
+            movieDetailDetail = savedInstanceState.getParcelable(MOVIE_DETAIL);
             refreshMovieUI();
         }else
             loadMovieDetail();
@@ -150,13 +152,15 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
 
     @Override
     public void onMovieClick(VideoItem item) {
-
+        if (item!=null){
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.videoUrlString)));
+        }
     }
 
     // --------------------------------------------------------
     //  Loading Movies AsyncTask
     // --------------------------------------------------------
-    private class LoadMovieDetailTask extends AsyncTask<Void,Void,Movie> {
+    private class LoadMovieDetailTask extends AsyncTask<Void,Void,MovieDetail> {
 
         @Override
         protected void onPreExecute() {
@@ -164,21 +168,45 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         }
 
         @Override
-        protected Movie doInBackground(Void... params) {
+        protected MovieDetail doInBackground(Void... params) {
 
             // Get the Url depending in the request mode (movies ordered by most_popular or top_rated).
             List<String> parametersList = new ArrayList<>();
             parametersList.add(mMovieId + "");
-            URL weatherRequestUrl = NetworkUtils.buildUrl(Constants.SEARCH_MOVIE_DETAIL_BY_ID,parametersList);
+            URL movieDetailRequestUrl           = NetworkUtils.buildUrl(Constants.SEARCH_MOVIE_DETAIL_BY_ID,parametersList);
+            URL movieDetailVideosRequestUrl     = NetworkUtils.buildUrl(Constants.SEARCH_MOVIE_DETAIL_VIDEOS_BY_ID,parametersList);
+            URL movieDetailReviewsRequestUrl    = NetworkUtils.buildUrl(Constants.SEARCH_MOVIE_DETAIL_REVIEWS_BY_ID,parametersList);
 
             try {
+
+                // ---------------------------------------------
+                // GET MOVIE DETAIL BASIC INFO
+                // ---------------------------------------------
+
                 String response = NetworkUtils
-                        .getResponseFromHttpUrl(MovieDetailActivity.this, weatherRequestUrl);
+                        .getResponseFromHttpUrl(MovieDetailActivity.this, movieDetailRequestUrl);
 
                 if(response==null)
                     return null;
 
-                return MovieHelperUtils.getMovieDetailFromJson(response);
+                // Get the Basic Info of the Movie from the first webservice.
+                MovieDetail movieDetail = MovieHelperUtils.getMovieDetailFromJson(response);
+
+                // ---------------------------------------------
+                // GET MOVIE DETAIL VIDEO LIST
+                // ---------------------------------------------
+                String responseMovieList = NetworkUtils
+                        .getResponseFromHttpUrl(MovieDetailActivity.this, movieDetailVideosRequestUrl);
+                movieDetail.setMovieVideoList(MovieHelperUtils.getMovieDetailVideoListFromJson(responseMovieList));
+
+                // ---------------------------------------------
+                // GET MOVIE DETAIL BASIC INFO
+                // ---------------------------------------------
+                String responseReviewList = NetworkUtils
+                        .getResponseFromHttpUrl(MovieDetailActivity.this, movieDetailReviewsRequestUrl);
+                movieDetail.setMovieReviewList(MovieHelperUtils.getMovieDetailReviewsListFromJson(responseReviewList));
+
+                return movieDetail;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -187,12 +215,12 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
         }
 
         @Override
-        protected void onPostExecute(Movie movieResponse){
+        protected void onPostExecute(MovieDetail movieDetailResponse){
 
             // Set the Adapter List.
-            movieDetail = movieResponse;
+            movieDetailDetail = movieDetailResponse;
 
-            if(movieDetail!=null){
+            if(movieDetailDetail !=null){
                 showMovieDetailContainerInUI();
                 refreshMovieUI();
             }else
@@ -204,31 +232,21 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
 
     private void refreshMovieUI(){
 
-        if(movieDetail==null) {
+        if(movieDetailDetail ==null) {
             showErrorMessageInUI();
             return;
         }
 
-        mBinding.movieTitleTextView.setText(movieDetail.movieTitle());
-        mBinding.movieReleaseDateTextView.setText(movieDetail.movieReleaseDate());
-        mBinding.movieRatingTextView.setText(movieDetail.movieRating());
-        mBinding.movieSynopsisTextView.setText(movieDetail.movieSynopsis());
-        Picasso.with(this).load(movieDetail.moviePosterUrl())
+        mBinding.movieTitleTextView.setText(movieDetailDetail.movieTitle());
+        mBinding.movieReleaseDateTextView.setText(movieDetailDetail.movieReleaseDate());
+        mBinding.movieRatingTextView.setText(movieDetailDetail.movieRating());
+        mBinding.movieSynopsisTextView.setText(movieDetailDetail.movieSynopsis());
+        Picasso.with(this).load(movieDetailDetail.moviePosterUrl())
                             .placeholder(R.drawable.ic_image_placeholder)
                             .error(R.drawable.ic_loading_error)
                             .into(mBinding.posterHolder);
-
-        List<VideoItem> fakeVideoList = new ArrayList<>();
-        fakeVideoList.add(new VideoItem("Avengers Ultron (COMIC-CON","youtube.com"));
-        fakeVideoList.add(new VideoItem("Avengers Ultron Teaser (COMIC-CON","youtube.com"));
-        mVideosAdapter.setItemList(fakeVideoList);
-
-        List<ReviewItem> fakeReviewList = new ArrayList<>();
-        fakeReviewList.add(new ReviewItem("Peter Arcentales","Este es un comentario de prueba asi que pilas por que va ser largo."));
-        fakeReviewList.add(new ReviewItem("Pepito Pepe","Que vaina con ese man. Ya no jodas."));
-        fakeReviewList.add(new ReviewItem("Pepito Pepe 2","Que vaina con ese man. Ya no jodas."));
-        fakeReviewList.add(new ReviewItem("Pepito Pepe 3","Este es un comentario de prueba asi que pilas por que va ser largo."));
-        mReviewsAdapter.setItemList(fakeReviewList);
+        mVideosAdapter.setItemList(movieDetailDetail.movieVideoList());
+        mReviewsAdapter.setItemList(movieDetailDetail.movieReviewList());
 
     }
 
@@ -258,20 +276,5 @@ public class MovieDetailActivity extends AppCompatActivity implements VideosAdap
 
         // Show an Error message.
         mBinding.movieDetailContainer.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-        // If MovieDetail is not loaded yet, then avoid it to save it in the SaveInstance while screen rotates.
-        // This will make that the if-clause (with savedInstanceState) in the OnCreate(), to force to call again the WS.
-        if(movieDetail==null) {
-            Log.d(TAG,"Avoiding saving moviesList in savedInstanceState...");
-            super.onSaveInstanceState(outState);
-            return;
-        }
-
-        outState.putParcelable(MOVIE_DETAIL,movieDetail);
-        super.onSaveInstanceState(outState);
     }
 }

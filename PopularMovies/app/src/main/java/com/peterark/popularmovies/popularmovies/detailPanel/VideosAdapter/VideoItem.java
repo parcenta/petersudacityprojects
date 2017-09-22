@@ -6,11 +6,13 @@ package com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter;
 
 public class VideoItem {
     public String videoTitle;
-    public String videoUrl;
+    public String videoUrlString;
+    public String videoUrlThumbnailUrl;
 
-    public VideoItem(String videoTitle,String videoUrl){
-        this.videoTitle = videoTitle;
-        this.videoUrl   = videoUrl;
+    public VideoItem(String videoTitle,String videoUrlString,String videoUrlThumbnailUrl){
+        this.videoTitle             = videoTitle;
+        this.videoUrlString         = videoUrlString;
+        this.videoUrlThumbnailUrl   = videoUrlThumbnailUrl;
     }
 
 }

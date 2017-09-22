@@ -1,64 +1,42 @@
 package com.peterark.popularmovies.popularmovies.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.peterark.popularmovies.popularmovies.Constants;
+import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.ReviewItem;
+import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideoItem;
 import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 
-public class Movie implements Parcelable {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MovieDetail {
 
     private final String movieTitle;
     private final String movieReleaseDate;
     private final String movieRating;
     private final String movieSynopsis;
     private final String moviePosterUrl;
+    public List<VideoItem> movieVideoList;
+    public List<ReviewItem> movieReviewList;
 
-    private Movie(String movieTitle, String movieReleaseDate, String movieRating, String movieSynopsis, String moviePosterUrl) {
-        this.movieTitle = movieTitle;
-        this.movieReleaseDate = movieReleaseDate;
-        this.movieRating = movieRating;
-        this.movieSynopsis = movieSynopsis;
-        this.moviePosterUrl = moviePosterUrl;
+    private MovieDetail(String movieTitle, String movieReleaseDate, String movieRating, String movieSynopsis, String moviePosterUrl, List<VideoItem> videoList, List<ReviewItem> reviewList) {
+        this.movieTitle         = movieTitle;
+        this.movieReleaseDate   = movieReleaseDate;
+        this.movieRating        = movieRating;
+        this.movieSynopsis      = movieSynopsis;
+        this.moviePosterUrl     = moviePosterUrl;
+        this.movieVideoList     = videoList;
+        this.movieReviewList    = reviewList;
     }
 
     // ---------------------------------
-    // Parcelable
+    // Setters (Some)
     // ---------------------------------
-    private Movie(Parcel in){
-        this.movieTitle         = in.readString();
-        this.movieReleaseDate   = in.readString();
-        this.movieRating        = in.readString();
-        this.movieSynopsis      = in.readString();
-        this.moviePosterUrl     = in.readString();
+    public void setMovieVideoList(List<VideoItem> videoList){
+        this.movieVideoList = videoList;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setMovieReviewList(List<ReviewItem> reviewList){
+        this.movieReviewList = reviewList;
     }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(movieTitle);
-        parcel.writeString(movieReleaseDate);
-        parcel.writeString(movieRating);
-        parcel.writeString(movieSynopsis);
-        parcel.writeString(moviePosterUrl);
-    }
-
-
-    public final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel parcel) {
-            return new Movie(parcel);
-        }
-
-        @Override
-        public Movie[] newArray(int i) {
-            return new Movie[i];
-        }
-    };
 
     // ---------------------------------
     // Getters
@@ -78,6 +56,9 @@ public class Movie implements Parcelable {
     public String moviePosterUrl() {
         return this.moviePosterUrl;
     }
+    public List<VideoItem> movieVideoList(){return this.movieVideoList;}
+    public List<ReviewItem> movieReviewList(){return this.movieReviewList;}
+
 
     // ---------------------------------
     //  Builder
@@ -89,6 +70,8 @@ public class Movie implements Parcelable {
         private String movieRating;
         private String movieSynopsis;
         private String moviePosterUrl;
+        private List<VideoItem> movieVideoList;
+        private List<ReviewItem> movieReviewList;
 
         public Builder(){
             this.movieTitle         = "NO_NAME";
@@ -96,6 +79,8 @@ public class Movie implements Parcelable {
             this.movieRating        = "";
             this.movieSynopsis      = "";
             this.moviePosterUrl     = "";
+            this.movieVideoList     = new ArrayList<>();
+            this.movieReviewList    = new ArrayList<>();
         }
 
         public Builder withMovieTitle(String movieTitle){
@@ -123,12 +108,24 @@ public class Movie implements Parcelable {
             return this;
         }
 
-        public Movie build(){
-            return new Movie(movieTitle,
+        public Builder withMovieVideoList(List<VideoItem> videoList){
+            this.movieVideoList = videoList;
+            return this;
+        }
+
+        public Builder withMovieReviewList(List<ReviewItem> reviewList){
+            this.movieReviewList = reviewList;
+            return this;
+        }
+
+        public MovieDetail build(){
+            return new MovieDetail(movieTitle,
                                 movieReleaseDate,
                                 movieRating,
                                 movieSynopsis,
-                                moviePosterUrl);
+                                moviePosterUrl,
+                                movieVideoList,
+                                movieReviewList);
         }
     }
 }

@@ -19,10 +19,15 @@ import static android.content.ContentValues.TAG;
 
 public class NetworkUtils {
 
+    // Helper
+    private final static String MOVIE_ID_TAG = "[MOVIE_ID]";
+
     // Base URLs
     private static final String MOVIE_DB_BASE_URL                       = "http://api.themoviedb.org/3/movie/";
     private static final String SEARCH_MOVIES_BY_MOST_POPULAR_BASE_URL  = MOVIE_DB_BASE_URL + "popular";
     private static final String SEARCH_MOVIES_BY_TOP_RATED_BASE_URL     = MOVIE_DB_BASE_URL + "top_rated";
+    private static final String SEARCH_MOVIES_VIDEOS_TEMPLATE_URL       = MOVIE_DB_BASE_URL + MOVIE_ID_TAG + "/videos";
+    private static final String SEARCH_MOVIES_REVIEWS_TEMPLATE_URL      = MOVIE_DB_BASE_URL + MOVIE_ID_TAG + "/reviews";
 
     // Query Parameters
     private static final String API_KEY_QUERY = "api_key";
@@ -42,18 +47,34 @@ public class NetworkUtils {
                 baseSearchUrl = SEARCH_MOVIES_BY_MOST_POPULAR_BASE_URL;
                 break;
 
+
             case Constants.ORDER_BY_TOP_RATED:
                 baseSearchUrl = SEARCH_MOVIES_BY_TOP_RATED_BASE_URL;
                 break;
+
 
             case Constants.SEARCH_MOVIE_DETAIL_BY_ID:
                 if(params == null || params.isEmpty())
                     return null;
 
-                // Add the MovieId at the end of the URL. Example: "http://api.themoviedb.org/3/movie/123456"
-                // As specified in the Documentation API (https://developers.themoviedb.org/3/movies?group=movies)
                 baseSearchUrl = MOVIE_DB_BASE_URL + params.get(0).trim(); //
                 break;
+
+
+            case Constants.SEARCH_MOVIE_DETAIL_VIDEOS_BY_ID:
+                if(params == null || params.isEmpty())
+                    return null;
+                baseSearchUrl = SEARCH_MOVIES_VIDEOS_TEMPLATE_URL.replace(MOVIE_ID_TAG,params.get(0).trim()); //
+                break;
+
+
+            case Constants.SEARCH_MOVIE_DETAIL_REVIEWS_BY_ID:
+                if(params == null || params.isEmpty())
+                    return null;
+                baseSearchUrl = SEARCH_MOVIES_REVIEWS_TEMPLATE_URL.replace(MOVIE_ID_TAG,params.get(0).trim()); //
+                break;
+
+
             default:
                 return null;
         }
