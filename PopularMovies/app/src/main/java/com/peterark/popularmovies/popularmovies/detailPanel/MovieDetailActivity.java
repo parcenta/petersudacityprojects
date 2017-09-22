@@ -7,17 +7,18 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.peterark.popularmovies.popularmovies.Constants;
 import com.peterark.popularmovies.popularmovies.R;
 import com.peterark.popularmovies.popularmovies.databinding.ActivityMovieDetailBinding;
+import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.ReviewItem;
+import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.ReviewsAdapter;
+import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideoItem;
+import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideosAdapter;
 import com.peterark.popularmovies.popularmovies.models.Movie;
 import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 import com.peterark.popularmovies.popularmovies.utils.NetworkUtils;
@@ -27,7 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity implements VideosAdapter.OnVideoClickHandler{
 
     private final String TAG = this.getClass().getSimpleName();
 
@@ -45,6 +46,10 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     // Asynctask
     private LoadMovieDetailTask loadMovieDetailTask;
+
+    // Adapters
+    private VideosAdapter mVideosAdapter;
+    private ReviewsAdapter mReviewsAdapter;
 
     // Binding
     private ActivityMovieDetailBinding mBinding;
@@ -85,6 +90,20 @@ public class MovieDetailActivity extends AppCompatActivity {
                 loadMovieDetail();
             }
         });
+
+        // Setting Video(Trailers,etc) Adapter
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        mBinding.videosRecyclerView.setLayoutManager(horizontalLayoutManager);
+        mBinding.videosRecyclerView.setHasFixedSize(true);
+        mVideosAdapter = new VideosAdapter(this,this);
+        mBinding.videosRecyclerView.setAdapter(mVideosAdapter);
+
+        // Setting Reviews Adapter
+        LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        mBinding.reviewsRecyclerView.setLayoutManager(verticalLayoutManager);
+        mBinding.reviewsRecyclerView.setHasFixedSize(true);
+        mReviewsAdapter = new ReviewsAdapter(this);
+        mBinding.reviewsRecyclerView.setAdapter(mReviewsAdapter);
 
         // Load Data in Activity
         if(savedInstanceState!=null && savedInstanceState.containsKey(MOVIE_DETAIL)){
@@ -127,6 +146,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onMovieClick(VideoItem item) {
+
     }
 
     // --------------------------------------------------------
@@ -193,6 +217,18 @@ public class MovieDetailActivity extends AppCompatActivity {
                             .placeholder(R.drawable.ic_image_placeholder)
                             .error(R.drawable.ic_loading_error)
                             .into(mBinding.posterHolder);
+
+        List<VideoItem> fakeVideoList = new ArrayList<>();
+        fakeVideoList.add(new VideoItem("Avengers Ultron (COMIC-CON","youtube.com"));
+        fakeVideoList.add(new VideoItem("Avengers Ultron Teaser (COMIC-CON","youtube.com"));
+        mVideosAdapter.setItemList(fakeVideoList);
+
+        List<ReviewItem> fakeReviewList = new ArrayList<>();
+        fakeReviewList.add(new ReviewItem("Peter Arcentales","Este es un comentario de prueba asi que pilas por que va ser largo."));
+        fakeReviewList.add(new ReviewItem("Pepito Pepe","Que vaina con ese man. Ya no jodas."));
+        fakeReviewList.add(new ReviewItem("Pepito Pepe 2","Que vaina con ese man. Ya no jodas."));
+        fakeReviewList.add(new ReviewItem("Pepito Pepe 3","Este es un comentario de prueba asi que pilas por que va ser largo."));
+        mReviewsAdapter.setItemList(fakeReviewList);
 
     }
 

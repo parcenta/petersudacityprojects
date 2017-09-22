@@ -22,6 +22,7 @@ public class MovieHelperUtils {
     private static final String TAG = MovieHelperUtils.class.getSimpleName();
 
     private final static String imageBaseUrl = "http://image.tmdb.org/t/p/w185";
+    private final static String imageBigBaseUrl = "http://image.tmdb.org/t/p/w342";
 
     public static List<MovieItem> getMovieListFromJson(String movieJsonString) throws JSONException {
 
@@ -66,7 +67,7 @@ public class MovieHelperUtils {
         String movieReleaseDate     = movieDetailJson.getString("release_date");
         double movieRating          = movieDetailJson.getDouble("vote_average");
         String movieSynopsis        = movieDetailJson.getString("overview");
-        String moviePosterUrl       = imageBaseUrl.concat(movieDetailJson.getString("poster_path"));
+        String moviePosterUrl       = imageBigBaseUrl.concat(movieDetailJson.getString("poster_path"));
 
         return new Movie.Builder().withMovieTitle(movieTitle)
                                     .withMovieSynopsis(movieSynopsis)

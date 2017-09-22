@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="120dp"
+        android:background="@color/black_primary"
+        android:layout_marginRight="8dp">
+        <TextView
+            android:id="@+id/video_thumbnail_title"
+            style="@style/PopularMovies.TextView.Caption.VideoThumbnailCaption"
+            tools:text="Avengers Teaser Trailer (COMIC CON 2017)"
+            />
+        <ImageView
+            android:id="@+id/video_thumbnail_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play_arrow_white"/>
+    </FrameLayout>
+
+</layout>
