@@ -73,10 +73,11 @@ public class MovieHelperUtils {
         String movieSynopsis        = movieDetailJson.getString("overview");
         String moviePosterUrl       = imageBigBaseUrl.concat(movieDetailJson.getString("poster_path"));
 
+
         return new MovieDetail.Builder().withMovieTitle(movieTitle)
                                     .withMovieSynopsis(movieSynopsis)
                                     .withMoviePosterUrl(moviePosterUrl)
-                                    .withMovieRating(movieRating)
+                                    .withMovieRating(String.valueOf(movieRating))
                                     .withMovieReleaseDate(movieReleaseDate)
                                     .build();
 
@@ -86,7 +87,7 @@ public class MovieHelperUtils {
     public static MovieDetail getMovieDetailFromCursor(Cursor cursor){
 
         String movieTitle       = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_NAME));
-        String movieReleaseDate = String.valueOf(cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE))); // Check the MovieDetail.java to check how the date is transformed to a readable text.
+        String movieReleaseDate = String.valueOf(cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE)));
         double movieRating      = cursor.getDouble(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_USER_RATING));
         String movieSynopsis    = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_SYNOPSIS));
         String moviePosterUrl   = imageBigBaseUrl.concat(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL)));
@@ -94,9 +95,9 @@ public class MovieHelperUtils {
         return new MovieDetail.Builder().withMovieTitle(movieTitle)
                 .withMovieSynopsis(movieSynopsis)
                 .withMoviePosterUrl(moviePosterUrl)
-                .withMovieRating(movieRating)
+                .withMovieRating(String.valueOf(movieRating))
                 .withMovieReleaseDate(movieReleaseDate)
-                .withMovieIsFavorite(true) // If exists in this table, then is favorite
+                .withMovieIsFavorite(true) // If it exists in this table, then is a favorite movie.
                 .build();
 
     }

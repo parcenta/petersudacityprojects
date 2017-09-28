@@ -1,5 +1,6 @@
 package com.peterark.popularmovies.popularmovies;
 
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.peterark.popularmovies.popularmovies.database.contracts.FavoriteMoviesContract;
 import com.peterark.popularmovies.popularmovies.databinding.ActivityHomeScreenBinding;
 import com.peterark.popularmovies.popularmovies.detailPanel.MovieDetailActivity;
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
@@ -129,6 +131,10 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
                 orderMode = Constants.ORDER_BY_TOP_RATED;
                 loadMovies();
                 break;
+            case R.id.order_by_favorite:
+                orderMode = Constants.ORDER_BY_FAVORITE;
+                loadMovies();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -172,27 +178,49 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
         @Override
         protected ArrayList<MovieItem> doInBackground(Void... params) {
 
-            // Get the Url depending in the request mode (movies ordered by most_popular or top_rated).
-            URL weatherRequestUrl = NetworkUtils.buildUrl(orderMode,null);
+            List<MovieItem> itemList = new ArrayList<>();
 
-            try {
-                String response = NetworkUtils
-                        .getResponseFromHttpUrl(HomeScreenActivity.this,weatherRequestUrl);
+            switch (orderMode){
+                case Constants.ORDER_BY_FAVORITE:
 
-                if(response==null)
-                    return null;
+                    Cursor cursor = getContentResolver().query(FavoriteMoviesContract.FavoritesMoviesEntry.CONTENT_URI,null,null,null,null);
 
-                Log.d(TAG,"JsonString Response: " + response);
+                    if(cursor!=null) {
+                        while (cursor.moveToNext()) {
+                            int movieId = cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_ID));
+                            itemList.add(new MovieItem.Builder().withMovieId(movieId)
+                                    .withMoviePosterUrl("google.com")
+                                    .build());
+                        }
+                        cursor.close();
+                    }
 
-                List<MovieItem> itemList = MovieHelperUtils.getMovieListFromJson(response);
+                    return new ArrayList<>(itemList);
 
-                return new ArrayList<>(itemList);
+                default:
+                    // Get the Url depending in the request mode (movies ordered by most_popular or top_rated).
+                    URL weatherRequestUrl = NetworkUtils.buildUrl(orderMode,null);
 
-            } catch (Exception e) {
-                Log.d(TAG,"Exception was thrown when loading movies...");
-                e.printStackTrace();
-                return null;
+                    try {
+                        String response = NetworkUtils
+                                .getResponseFromHttpUrl(HomeScreenActivity.this,weatherRequestUrl);
+
+                        if(response==null)
+                            return null;
+
+                        Log.d(TAG,"JsonString Response: " + response);
+
+                        itemList = MovieHelperUtils.getMovieListFromJson(response);
+
+                        return new ArrayList<>(itemList);
+
+                    } catch (Exception e) {
+                        Log.d(TAG,"Exception was thrown when loading movies...");
+                        e.printStackTrace();
+                        return null;
+                    }
             }
+
         }
 
         @Override

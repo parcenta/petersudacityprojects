@@ -77,6 +77,7 @@
                             android:fontFamily="sans-serif-light"
                             tools:text="The Lord of the Rings: The Fellowship of the Ring" />
                         <ImageView
+                            android:id="@+id/mark_as_favorite_action"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="bottom"
@@ -142,25 +143,83 @@
                     android:textSize="14sp"
 
                     tools:text="The Lord of the Rings Movie is..." />
-                
+
+
+                <!-- Videos (Trailers, Teasers, etc -->
                 <TextView
                     style="@style/PopularMovies.TextView.Caption.SectionHeader"
                     android:padding="16dp"
                     android:text="Videos"/>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/videos_recycler_view"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content">
 
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/videos_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <ProgressBar
+                        android:id="@+id/videos_loading_progress_bar"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="16dp"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/no_videos_found_message"
+                        style="@style/PopularMovies.TextView.Caption.ErrorMessage"
+                        android:text="@string/no_videos_found"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/error_occurred_loading_videos_textview"
+                        style="@style/PopularMovies.TextView.Caption.ErrorMessage"
+                        android:text="@string/error_occurred_press_here_to_try_again"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
+
+                <!-- Reviews from Users -->
                 <TextView
                     style="@style/PopularMovies.TextView.Caption.SectionHeader"
                     android:text="Review"/>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/reviews_recycler_view"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/reviews_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+
+                    <ProgressBar
+                        android:id="@+id/review_loading_progress_bar"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="16dp"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/no_reviews_found_message"
+                        style="@style/PopularMovies.TextView.Caption.ErrorMessage"
+                        android:text="@string/no_reviews_found"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/error_occurred_loading_reviews_textview"
+                        style="@style/PopularMovies.TextView.Caption.ErrorMessage"
+                        android:text="@string/error_occurred_press_here_to_try_again"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
+
+
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

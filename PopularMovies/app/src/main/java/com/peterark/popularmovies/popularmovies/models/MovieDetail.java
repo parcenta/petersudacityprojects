@@ -15,27 +15,20 @@ public class MovieDetail {
     private final String movieRating;
     private final String movieSynopsis;
     private final String moviePosterUrl;
-    public List<VideoItem> movieVideoList;
-    public List<ReviewItem> movieReviewList;
+    public boolean movieIsFavorite;
 
-    private MovieDetail(String movieTitle, String movieReleaseDate, String movieRating, String movieSynopsis, String moviePosterUrl, List<VideoItem> videoList, List<ReviewItem> reviewList) {
+    private MovieDetail(String movieTitle,
+                        String movieReleaseDate,
+                        String movieRating,
+                        String movieSynopsis,
+                        String moviePosterUrl,
+                        boolean movieIsFavorite) {
         this.movieTitle         = movieTitle;
         this.movieReleaseDate   = movieReleaseDate;
         this.movieRating        = movieRating;
         this.movieSynopsis      = movieSynopsis;
         this.moviePosterUrl     = moviePosterUrl;
-        this.movieVideoList     = videoList;
-        this.movieReviewList    = reviewList;
-    }
-
-    // ---------------------------------
-    // Setters (Some)
-    // ---------------------------------
-    public void setMovieVideoList(List<VideoItem> videoList){
-        this.movieVideoList = videoList;
-    }
-    public void setMovieReviewList(List<ReviewItem> reviewList){
-        this.movieReviewList = reviewList;
+        this.movieIsFavorite    = movieIsFavorite;
     }
 
     // ---------------------------------
@@ -56,9 +49,6 @@ public class MovieDetail {
     public String moviePosterUrl() {
         return this.moviePosterUrl;
     }
-    public List<VideoItem> movieVideoList(){return this.movieVideoList;}
-    public List<ReviewItem> movieReviewList(){return this.movieReviewList;}
-
 
     // ---------------------------------
     //  Builder
@@ -70,17 +60,15 @@ public class MovieDetail {
         private String movieRating;
         private String movieSynopsis;
         private String moviePosterUrl;
-        private List<VideoItem> movieVideoList;
-        private List<ReviewItem> movieReviewList;
+        private boolean movieIsFavorite;
 
         public Builder(){
             this.movieTitle         = "NO_NAME";
-            this.movieReleaseDate   = "";
-            this.movieRating        = "";
+            this.movieReleaseDate   = "0";
+            this.movieRating        = "0.0";
             this.movieSynopsis      = "";
             this.moviePosterUrl     = "";
-            this.movieVideoList     = new ArrayList<>();
-            this.movieReviewList    = new ArrayList<>();
+            this.movieIsFavorite    = false;
         }
 
         public Builder withMovieTitle(String movieTitle){
@@ -89,12 +77,12 @@ public class MovieDetail {
         }
 
         public Builder withMovieReleaseDate(String movieReleaseDate){
-            this.movieReleaseDate = MovieHelperUtils.getDateAsMMMDDYYYYWithMonthName(movieReleaseDate);
+            this.movieReleaseDate = movieReleaseDate;
             return this;
         }
 
-        public Builder withMovieRating(double movieRating){
-            this.movieRating = movieRating + "/" + Constants.MAX_MOVIE_RATING;
+        public Builder withMovieRating(String movieRating){
+            this.movieRating = movieRating;
             return this;
         }
 
@@ -108,13 +96,8 @@ public class MovieDetail {
             return this;
         }
 
-        public Builder withMovieVideoList(List<VideoItem> videoList){
-            this.movieVideoList = videoList;
-            return this;
-        }
-
-        public Builder withMovieReviewList(List<ReviewItem> reviewList){
-            this.movieReviewList = reviewList;
+        public Builder withMovieIsFavorite(boolean movieIsFavorite){
+            this.movieIsFavorite = movieIsFavorite;
             return this;
         }
 
@@ -124,8 +107,7 @@ public class MovieDetail {
                                 movieRating,
                                 movieSynopsis,
                                 moviePosterUrl,
-                                movieVideoList,
-                                movieReviewList);
+                                movieIsFavorite);
         }
     }
 }

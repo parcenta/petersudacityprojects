@@ -9,6 +9,9 @@ public class Constants {
 
     public static final String ORDER_BY_MOST_POPULAR                = "ORDER_BY_MOST_POPULAR";
     public static final String ORDER_BY_TOP_RATED                   = "ORDER_BY_TOP_RATED";
+    public static final String ORDER_BY_FAVORITE                    = "ORDER_BY_FAVORITE";
+
+
     public static final String SEARCH_MOVIE_DETAIL_BY_ID            = "SEARCH_MOVIE_DETAIL_BY_ID";
     public static final String SEARCH_MOVIE_DETAIL_VIDEOS_BY_ID     = "SEARCH_MOVIE_DETAIL_VIDEOS_BY_ID";
     public static final String SEARCH_MOVIE_DETAIL_REVIEWS_BY_ID    = "SEARCH_MOVIE_DETAIL_REVIEWS_BY_ID";
@@ -27,6 +30,8 @@ public class Constants {
                 return context.getString(R.string.top_rated_description);
             case ORDER_BY_MOST_POPULAR:
                 return context.getString(R.string.most_popular_description);
+            case ORDER_BY_FAVORITE:
+                return context.getString(R.string.favorites);
             default:
                 return context.getString(R.string.not_available);
         }

@@ -9,4 +9,8 @@
         android:id="@+id/order_by_top_rated"
         android:title="@string/top_rated"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/order_by_favorite"
+        android:title="@string/favorites"
+        app:showAsAction="never"/>
 </menu>

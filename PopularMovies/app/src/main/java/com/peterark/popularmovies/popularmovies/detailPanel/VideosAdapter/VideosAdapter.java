@@ -28,7 +28,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdap
     }
 
     public interface OnVideoClickHandler{
-        void onMovieClick(VideoItem item);
+        void onVideoClick(VideoItem item);
     }
 
 
@@ -90,7 +90,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdap
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             VideoItem item = mItemList.get(adapterPosition);
-            mOnClickHandler.onMovieClick(item);
+            mOnClickHandler.onVideoClick(item);
         }
     }
 

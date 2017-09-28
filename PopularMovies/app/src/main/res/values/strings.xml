@@ -5,6 +5,8 @@
     <!-- General Strings -->
     <string name="error_occurred">An error has occurred.\nPlease try again.</string>
     <string name="error_occurred_press_here_to_try_again">An error has occurred.\nPress here to try again.</string>
+    <string name="no_videos_found">No trailers available.</string>
+    <string name="no_reviews_found">No reviews available.</string>
     <string name="no_movies_found">No movies found.</string>
     <string name="default_image_content_description">Poster</string>
     <string name="not_available">N/A</string>
@@ -12,6 +14,7 @@
     <!-- Menu Options -->
     <string name="most_popular">Most Popular</string>
     <string name="top_rated">Top Rated</string>
+    <string name="favorites">Favorites</string>
 
     <!-- Home Screen -->
     <string name="most_popular_description">Most Popular</string>
@@ -20,4 +23,6 @@
     <!-- Detail Screen -->
     <string name="rating">Rating</string>
     <string name="release_date">Release Date</string>
+
+    <string name="content_authority">com.peterark.popularmovies</string>
 </resources>
