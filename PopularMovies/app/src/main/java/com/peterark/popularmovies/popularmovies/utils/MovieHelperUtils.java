@@ -1,7 +1,9 @@
 package com.peterark.popularmovies.popularmovies.utils;
 
+import android.database.Cursor;
 import android.util.Log;
 
+import com.peterark.popularmovies.popularmovies.database.contracts.FavoriteMoviesContract;
 import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.ReviewItem;
 import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideoItem;
 import com.peterark.popularmovies.popularmovies.models.MovieDetail;
@@ -81,9 +83,30 @@ public class MovieHelperUtils {
 
     }
 
+    public static MovieDetail getMovieDetailFromCursor(Cursor cursor){
+
+        String movieTitle       = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_NAME));
+        String movieReleaseDate = String.valueOf(cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE))); // Check the MovieDetail.java to check how the date is transformed to a readable text.
+        double movieRating      = cursor.getDouble(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_USER_RATING));
+        String movieSynopsis    = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_SYNOPSIS));
+        String moviePosterUrl   = imageBigBaseUrl.concat(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL)));
+
+        return new MovieDetail.Builder().withMovieTitle(movieTitle)
+                .withMovieSynopsis(movieSynopsis)
+                .withMoviePosterUrl(moviePosterUrl)
+                .withMovieRating(movieRating)
+                .withMovieReleaseDate(movieReleaseDate)
+                .withMovieIsFavorite(true) // If exists in this table, then is favorite
+                .build();
+
+    }
+
     public static List<VideoItem> getMovieDetailVideoListFromJson(String movieDetailVideoListJson) throws JSONException{
 
         List<VideoItem> videoList = new ArrayList<>();
+
+        if (movieDetailVideoListJson == null)
+            return videoList; // Empty list
 
         // Convert the JsonString to JsonObject.
         JSONObject videoResponseJsonObject = new JSONObject(movieDetailVideoListJson);
@@ -118,6 +141,9 @@ public class MovieHelperUtils {
     public static List<ReviewItem> getMovieDetailReviewsListFromJson(String movieDetailReviewsListJson) throws JSONException{
 
         List<ReviewItem> reviewList = new ArrayList<>();
+
+        if (movieDetailReviewsListJson == null)
+            return reviewList; // Returning empty list.
 
         // Convert the JsonString to JsonObject.
         JSONObject reviewsResponseJsonObject = new JSONObject(movieDetailReviewsListJson);

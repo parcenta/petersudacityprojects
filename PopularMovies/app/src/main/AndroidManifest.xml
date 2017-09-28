@@ -20,6 +20,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".detailPanel.MovieDetailActivity"></activity>
+
+        <provider
+            android:name="com.peterark.popularmovies.popularmovies.providers.MoviesProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
