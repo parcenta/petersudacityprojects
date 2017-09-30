@@ -10,7 +10,7 @@
 
 
     <style name="PopularMovies.TextView.Caption" parent="Base.TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black_primary</item>
@@ -27,14 +27,14 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="PopularMovies.TextView.Caption.MetricLabel" parent="Base.TextAppearance.AppCompat.Caption">
+    <style name="PopularMovies.TextView.Caption.MetricLabel" parent="PopularMovies.TextView.Caption">
         <item name="android:textSize">20sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black_secondary</item>
     </style>
 
-    <style name="PopularMovies.TextView.Caption.VideoThumbnailCaption">
+    <style name="PopularMovies.TextView.Caption.VideoThumbnailCaption" parent="PopularMovies.TextView.Caption">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white_primary</item>
@@ -44,7 +44,7 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="PopularMovies.TextView.Caption.ErrorMessage">
+    <style name="PopularMovies.TextView.Caption.ErrorMessage" parent="PopularMovies.TextView.Caption">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black_secondary</item>
@@ -54,12 +54,25 @@
     </style>
 
     <style name="PopularMovies.TextView.Caption.Bubble">
-        <item name="android:layout_width">28sp</item>
-        <item name="android:layout_height">28sp</item>
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
         <item name="android:background">@drawable/user_circle_background</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white_primary</item>
         <item name="android:layout_marginRight">6dp</item>
+    </style>
+
+    <style name="PopularMovies.TextView.Caption.ReviewTitle" parent="PopularMovies.TextView.Caption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PopularMovies.TextView.Caption.ReviewCommentary" parent="PopularMovies.TextView.Caption">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/black_secondary</item>
+        <item name="android:layout_marginLeft">36dp</item>
     </style>
 
 </resources>

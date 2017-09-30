@@ -9,6 +9,8 @@
     <string name="no_reviews_found">No reviews available.</string>
     <string name="no_movies_found">No movies found.</string>
     <string name="default_image_content_description">Poster</string>
+    <string name="image_view_content_description_for_trailers">Movie trailer Link</string>
+    <string name="mark_as_favorite_content_description">Movie trailer Link</string>
     <string name="not_available">N/A</string>
 
     <!-- Menu Options -->
@@ -23,6 +25,8 @@
     <!-- Detail Screen -->
     <string name="rating">Rating</string>
     <string name="release_date">Release Date</string>
+    <string name="videos_subtitle">Trailers</string>
+    <string name="reviews_subtitle">Reviews</string>
 
     <string name="content_authority">com.peterark.popularmovies</string>
 </resources>

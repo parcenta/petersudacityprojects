@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.peterark.popularmovies.popularmovies.models.MovieItem;
+import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     public void onBindViewHolder(final MoviesAdapterViewHolder holder, int position) {
         MovieItem item = mItemList.get(position);
         Picasso.with(mContext)
-                .load(item.moviePosterUrl())                    // Loading ImageUrl
+                .load(MovieHelperUtils.imageBaseUrl.concat(item.moviePosterUrl()))                    // Loading ImageUrl
                 .placeholder(R.drawable.ic_image_placeholder)   // PlaceHolder Image (until loading finishes)
                 .error(R.drawable.ic_loading_error)             // Error Image (if loading fails)
                 .into(holder.posterImageView);

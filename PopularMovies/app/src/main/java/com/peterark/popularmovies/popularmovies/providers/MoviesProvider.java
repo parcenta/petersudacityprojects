@@ -14,22 +14,18 @@ import android.support.annotation.Nullable;
 import com.peterark.popularmovies.popularmovies.database.PopularMoviesDbHelper;
 import com.peterark.popularmovies.popularmovies.database.contracts.FavoriteMoviesContract;
 
-/**
- * Created by PETER on 26/9/2017.
- */
-
 public class MoviesProvider extends ContentProvider {
 
     private static final String MOVIES_TABLE_NAME = FavoriteMoviesContract.FavoritesMoviesEntry.TABLE_NAME;
 
-    public static final int CODE_FAVORITEMOVIES         = 1000;
-    public static final int CODE_FAVORITEMOVIES_WITH_ID = 1001;
+    private static final int CODE_FAVORITEMOVIES         = 1000;
+    private static final int CODE_FAVORITEMOVIES_WITH_ID = 1001;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     private PopularMoviesDbHelper mDbHelper;
 
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = FavoriteMoviesContract.CONTENT_AUTHORITY;
         matcher.addURI(authority, FavoriteMoviesContract.PATH_FAVORITE_MOVIES, CODE_FAVORITEMOVIES);

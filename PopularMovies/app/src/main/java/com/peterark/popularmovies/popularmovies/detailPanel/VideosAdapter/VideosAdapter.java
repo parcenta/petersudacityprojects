@@ -6,12 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
 import com.peterark.popularmovies.popularmovies.R;
-import com.peterark.popularmovies.popularmovies.databinding.ListItemMovieBinding;
 import com.peterark.popularmovies.popularmovies.databinding.ListItemVideoBinding;
-import com.peterark.popularmovies.popularmovies.models.MovieItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -75,9 +71,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosAdap
 
     public class VideosAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        // ---------------------------------------------------------------------------------------------------------
-        // Source: A friend who took Udacity Nanodegree before, recomend me this way to implement Databinding in the Adapter
-        // ---------------------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------------------------------------
+        // Source: A friend who took Udacity Nanodegree before, recomend me this way to implement Databinding in an Adapter
+        // He recomend me this link https://medium.com/google-developers/android-data-binding-recyclerview-db7c40d9f0e4
+        // -------------------------------------------------------------------------------------------------------------------
         ListItemVideoBinding mBinding;
 
         private VideosAdapterViewHolder(ListItemVideoBinding binding){

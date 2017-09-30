@@ -48,7 +48,7 @@ public class MovieHelperUtils {
 
             // Extract Values from JsonObject.
             int movieId         = oneMovieObject.getInt("id");
-            String posterUrl    = imageBaseUrl.concat(oneMovieObject.getString("poster_path"));
+            String posterUrl    = oneMovieObject.getString("poster_path");
 
             moviesList.add(new MovieItem.Builder()
                                         .withMovieId(movieId)
@@ -71,12 +71,12 @@ public class MovieHelperUtils {
         String movieReleaseDate     = movieDetailJson.getString("release_date");
         double movieRating          = movieDetailJson.getDouble("vote_average");
         String movieSynopsis        = movieDetailJson.getString("overview");
-        String moviePosterUrl       = imageBigBaseUrl.concat(movieDetailJson.getString("poster_path"));
+        String moviePosterPath      = movieDetailJson.getString("poster_path");
 
 
         return new MovieDetail.Builder().withMovieTitle(movieTitle)
                                     .withMovieSynopsis(movieSynopsis)
-                                    .withMoviePosterUrl(moviePosterUrl)
+                                    .withMoviePosterPath(moviePosterPath)
                                     .withMovieRating(String.valueOf(movieRating))
                                     .withMovieReleaseDate(movieReleaseDate)
                                     .build();
@@ -90,11 +90,11 @@ public class MovieHelperUtils {
         String movieReleaseDate = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE));
         double movieRating      = cursor.getDouble(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_USER_RATING));
         String movieSynopsis    = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_SYNOPSIS));
-        String moviePosterUrl   = imageBigBaseUrl.concat(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL)));
+        String moviePosterPath  = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL));
 
         return new MovieDetail.Builder().withMovieTitle(movieTitle)
                 .withMovieSynopsis(movieSynopsis)
-                .withMoviePosterUrl(moviePosterUrl)
+                .withMoviePosterPath(moviePosterPath)
                 .withMovieRating(String.valueOf(movieRating))
                 .withMovieReleaseDate(movieReleaseDate)
                 .withMovieIsFavorite(true) // If it exists in this table, then is a favorite movie.

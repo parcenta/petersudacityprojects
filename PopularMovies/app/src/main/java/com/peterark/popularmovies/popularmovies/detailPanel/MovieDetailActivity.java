@@ -27,7 +27,6 @@ import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.Revie
 import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideoItem;
 import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideosAdapter;
 import com.peterark.popularmovies.popularmovies.models.MovieDetail;
-import com.peterark.popularmovies.popularmovies.models.MovieItem;
 import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
 import com.peterark.popularmovies.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -44,22 +43,21 @@ public class MovieDetailActivity extends AppCompatActivity
     // Intent Extras names
     private final static String MOVIE_ID = "MOVIE_ID";
 
+
+    // Intent variables
+    private static int mMovieId;
+
     // Loader ID
     private final static int LOADER_ID_FOR_MOVIE_DETAIL_BASIC_INFO_LOAD = 1001;
     private final static int LOADER_ID_FOR_MOVIE_DETAIL_VIDEOS_LOAD     = 1002;
     private final static int LOADER_ID_FOR_MOVIE_DETAIL_REVIEWS_LOAD    = 1003;
     private final static int LOADER_ID_FOR_MOVIE_MARK_AS_FAVORITE       = 2000;
 
-    // Response Codes
+    // Response Codes (When marking movie as favorite).
     private final static int MARK_AS_FAVORITE_SUCCESSFULL       = 4000;
     private final static int MARK_AS_FAVORITE_ERROR             = 4001;
     private final static int MARK_AS_NOT_FAVORITE_SUCCESSFULL   = 4002;
     private final static int MARK_AS_NOT_FAVORITE_ERROR         = 4003;
-
-
-
-    // Intent variables
-    private static int mMovieId;
 
     // Movie
     private MovieDetail movieDetailDetail;
@@ -86,7 +84,9 @@ public class MovieDetailActivity extends AppCompatActivity
         return intent;
     }
 
-
+    //-----------------------------------------------------------------
+    //  OnCreate
+    //-----------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,10 +114,10 @@ public class MovieDetailActivity extends AppCompatActivity
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         mBinding.reviewsRecyclerView.setLayoutManager(verticalLayoutManager);
         mBinding.reviewsRecyclerView.setHasFixedSize(true);
-        mReviewsAdapter = new ReviewsAdapter(this);
+        mReviewsAdapter = new ReviewsAdapter();
         mBinding.reviewsRecyclerView.setAdapter(mReviewsAdapter);
 
-        // Resume/Start
+        // Init "Loading Movie Detail" loader.
         getSupportLoaderManager().initLoader(LOADER_ID_FOR_MOVIE_DETAIL_BASIC_INFO_LOAD,null,movieDetailResultLoaderListener);
     }
 
@@ -150,8 +150,13 @@ public class MovieDetailActivity extends AppCompatActivity
 
     @Override
     public void onVideoClick(VideoItem item) {
-        if (item!=null)
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.videoUrlString)));
+        if (item!=null) {
+            Intent openVideoIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.videoUrlString));
+            if (openVideoIntent.resolveActivity(getPackageManager()) != null)
+                startActivity(openVideoIntent);
+            else
+                Toast.makeText(this,"There is no application that can open a video. Try to install Youtube or a Browser in your device.",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void refreshMovieUI(){
@@ -165,8 +170,8 @@ public class MovieDetailActivity extends AppCompatActivity
         mBinding.movieReleaseDateTextView.setText(MovieHelperUtils.getDateAsMMMDDYYYYWithMonthName(movieDetailDetail.movieReleaseDate()));
         mBinding.movieRatingTextView.setText(movieDetailDetail.movieRating()  + "/" + Constants.MAX_MOVIE_RATING);
         mBinding.movieSynopsisTextView.setText(movieDetailDetail.movieSynopsis());
-        mBinding.markAsFavoriteAction.setImageResource(movieDetailDetail.movieIsFavorite ? R.drawable.ic_favorite_activated_white : R.drawable.ic_favorite_deactivated_white);
-        Picasso.with(this).load(movieDetailDetail.moviePosterUrl())
+        mBinding.markAsFavoriteAction.setImageResource(movieDetailDetail.movieIsFavorite() ? R.drawable.ic_favorite_activated_white : R.drawable.ic_favorite_deactivated_white);
+        Picasso.with(this).load(MovieHelperUtils.imageBaseUrl.concat(movieDetailDetail.moviePosterPath()))
                             .placeholder(R.drawable.ic_image_placeholder)
                             .error(R.drawable.ic_loading_error)
                             .into(mBinding.posterHolder);
@@ -237,6 +242,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
     /* -----------------------------------------------------------------------------------------------------------------
      * "Movie Detail Basic Info" Loader Callback
+     * Source of implemeting several loaders in the same activity: https://stackoverflow.com/questions/15643907/multiple-loaders-in-same-activity
      -------------------------------------------------------------------------------------------------------------------*/
     // Based on the forum https://stackoverflow.com/questions/15643907/multiple-loaders-in-same-activity
     private LoaderManager.LoaderCallbacks<MovieDetail> movieDetailResultLoaderListener
@@ -277,7 +283,7 @@ public class MovieDetailActivity extends AppCompatActivity
                         Cursor favoriteMovieCursor = context.getContentResolver().query(uriFavoriteMovieWithId,null,null,null,null,null);
 
                         // IF MOVIE IS FAVORITE: If FavoriteMovie cursor has results, then the data of the movie is saved in the db.
-                        if (favoriteMovieCursor != null && favoriteMovieCursor.moveToNext()) {
+                        if (favoriteMovieCursor != null && favoriteMovieCursor.moveToNext()){
                             Log.d(TAG, "loadInBackground: Movie is a favorite one. So we take the info from the Database.");
                             movieDetail = MovieHelperUtils.getMovieDetailFromCursor(favoriteMovieCursor);
                         }
@@ -298,12 +304,22 @@ public class MovieDetailActivity extends AppCompatActivity
                             movieDetail = MovieHelperUtils.getMovieDetailFromJson(response);
                         }
 
+                        // Close the Favorite Movies Cursor
+                        if (favoriteMovieCursor != null)
+                            favoriteMovieCursor.close();
+
                         return movieDetail;
 
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;
                     }
+                }
+
+                @Override
+                public void deliverResult(MovieDetail movieDetail) {
+                    cachedMovieDetail =  movieDetail;
+                    super.deliverResult(cachedMovieDetail);
                 }
             };
         }
@@ -318,9 +334,11 @@ public class MovieDetailActivity extends AppCompatActivity
 
             if (movieDetailDetail != null) {
 
-                // Once we succesfully have the Movie Detail
+                // Once we succesfully have the Movie Detail, then we start loading the Videos(trailers,ect) and Reviews.
                 getSupportLoaderManager().initLoader(LOADER_ID_FOR_MOVIE_DETAIL_VIDEOS_LOAD,null,movieDetailVideosLoaderListener);
                 getSupportLoaderManager().initLoader(LOADER_ID_FOR_MOVIE_DETAIL_REVIEWS_LOAD,null,movieDetailReviewsLoaderListener);
+
+                // Showing the Movie Detail info in the UI.
                 showMovieDetailContainerInUI();
                 refreshMovieUI();
             } else
@@ -337,6 +355,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
     /* -----------------------------------------------------------------------------------------------------------------
      * "Videos (Trailers, Teasers, etc)" Loader Callback
+     * Source of implemeting several loaders in the same activity: https://stackoverflow.com/questions/15643907/multiple-loaders-in-same-activity
      -------------------------------------------------------------------------------------------------------------------*/
     private LoaderManager.LoaderCallbacks<List<VideoItem>> movieDetailVideosLoaderListener
             = new LoaderManager.LoaderCallbacks<List<VideoItem>>(){
@@ -418,6 +437,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
     /* -----------------------------------------------------------------------------------------------------------------
      * "Reviews" Loader Callback
+     * Source of implemeting several loaders in the same activity: https://stackoverflow.com/questions/15643907/multiple-loaders-in-same-activity
      -------------------------------------------------------------------------------------------------------------------*/
     private LoaderManager.LoaderCallbacks<List<ReviewItem>> movieDetailReviewsLoaderListener
             = new LoaderManager.LoaderCallbacks<List<ReviewItem>>(){
@@ -501,6 +521,7 @@ public class MovieDetailActivity extends AppCompatActivity
 
     /* -----------------------------------------------------------------------------------------------------------------
      * "Mark as Favorite" Loader Callback
+     * Source of implemeting several loaders in the same activity: https://stackoverflow.com/questions/15643907/multiple-loaders-in-same-activity
      -------------------------------------------------------------------------------------------------------------------*/
     private LoaderManager.LoaderCallbacks<Integer> movieMarkAsFavoriteResultLoaderListener
             = new LoaderManager.LoaderCallbacks<Integer>() {
@@ -544,7 +565,7 @@ public class MovieDetailActivity extends AppCompatActivity
                         values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_SYNOPSIS,movieDetailDetail.movieSynopsis());
                         values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_USER_RATING,Double.valueOf(movieDetailDetail.movieRating()));
                         values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE,movieDetailDetail.movieReleaseDate());
-                        values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL,"google.com");
+                        values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL,movieDetailDetail.moviePosterPath());
 
                         Uri returnUri = getContentResolver().insert(FavoriteMoviesContract.FavoritesMoviesEntry.CONTENT_URI, values);
                         return returnUri != null ? MARK_AS_FAVORITE_SUCCESSFULL : MARK_AS_FAVORITE_ERROR;

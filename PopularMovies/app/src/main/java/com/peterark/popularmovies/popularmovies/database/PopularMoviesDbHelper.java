@@ -6,10 +6,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.peterark.popularmovies.popularmovies.database.contracts.FavoriteMoviesContract;
 
-/**
- * Created by PETER on 26/9/2017.
- */
-
 public class PopularMoviesDbHelper  extends SQLiteOpenHelper{
 
     private static final String DATABASE_NAME = "popularmoviesdb.db";

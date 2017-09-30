@@ -2,20 +2,16 @@ package com.peterark.popularmovies.popularmovies;
 
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
-import android.os.AsyncTask;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.peterark.popularmovies.popularmovies.database.contracts.FavoriteMoviesContract;
@@ -35,7 +31,6 @@ public class HomeScreenActivity extends AppCompatActivity
 
     //
     private final String TAG = this.getClass().getSimpleName();
-    private final String MOVIES_LIST  = "ITEM_LIST";
     private final String ORDER_BY   = "ORDER_BY";
 
     private ActivityHomeScreenBinding mBinding;
@@ -63,7 +58,7 @@ public class HomeScreenActivity extends AppCompatActivity
         mBinding.errorTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadMovies();
+                reloadMovies();
             }
         });
 
@@ -73,19 +68,27 @@ public class HomeScreenActivity extends AppCompatActivity
         else
             orderMode = Constants.ORDER_BY_MOST_POPULAR; // Default
 
+        refreshActionBarTitle();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getSupportLoaderManager().initLoader(0,null,this);
+        refreshActionBarTitle();
+
+        // If we were displaying favorites movies, then we restart the loader. Just in case the user "un-favorite" a favorite movie.
+        if(orderMode.equals(Constants.ORDER_BY_FAVORITE))
+            getSupportLoaderManager().restartLoader(0,null,this);
+        else
+            getSupportLoaderManager().initLoader(0,null,this);
     }
 
-    private void loadMovies(){
+    // Method to reload all again the movies.
+    private void reloadMovies(){
         // Set in the ActionBar title, by what order are the movies.
         refreshActionBarTitle();
 
-        // Restart the loader to load the movies.
         getSupportLoaderManager().restartLoader(0,null,this);
     }
 
@@ -111,15 +114,15 @@ public class HomeScreenActivity extends AppCompatActivity
         switch (itemId){
             case R.id.order_by_most_popular:
                 orderMode = Constants.ORDER_BY_MOST_POPULAR;
-                loadMovies();
+                reloadMovies();
                 break;
             case R.id.order_by_top_rated:
                 orderMode = Constants.ORDER_BY_TOP_RATED;
-                loadMovies();
+                reloadMovies();
                 break;
             case R.id.order_by_favorite:
                 orderMode = Constants.ORDER_BY_FAVORITE;
-                loadMovies();
+                reloadMovies();
                 break;
         }
 
@@ -148,12 +151,6 @@ public class HomeScreenActivity extends AppCompatActivity
             protected void onStartLoading() {
                 super.onStartLoading();
 
-                // Set the MoviesList to null.
-                moviesList = null;
-
-                // Empty (null) the Item List inside the adapter.
-                adapter.setItemList(null);
-
                 // First Hide the RecyclerView and the Error Message.
                 mBinding.moviesRecyclerView.setVisibility(View.INVISIBLE);
                 mBinding.errorTextView.setVisibility(View.INVISIBLE);
@@ -163,10 +160,23 @@ public class HomeScreenActivity extends AppCompatActivity
                 mBinding.loadingMoviesProgressBar.setVisibility(View.VISIBLE);
 
 
-                if(cachedMovieItemList!=null)
+                if(cachedMovieItemList!=null) {
+                    Log.d(TAG, "onStartLoading: Delivering result. Not force loading..");
+
                     deliverResult(cachedMovieItemList);
-                else
+                }
+                else{
+
+                    Log.d(TAG, "onStartLoading: Forcing Load...");
+
+                    // Set the MoviesList to null.
+                    moviesList = null;
+
+                    // Empty (null) the Item List inside the adapter.
+                    adapter.setItemList(null);
+
                     forceLoad();
+                }
             }
 
 
@@ -178,17 +188,27 @@ public class HomeScreenActivity extends AppCompatActivity
 
                 switch (orderMode){
 
-                    // If OrderMode = "Favorites" then we check for the Movies list sved in the DB.
+                    // ---------------------------------------------------
+                    // If we are searching for "Favorites" movies...
+                    // ---------------------------------------------------
                     case Constants.ORDER_BY_FAVORITE:
 
+                        // Get the Cursor for all the Favorite Movies saved in the DB.
                         Cursor cursor = getContentResolver().query(FavoriteMoviesContract.FavoritesMoviesEntry.CONTENT_URI,null,null,null,null);
 
                         if(cursor!=null) {
+
+                            // For each movie in the cursor, we added to the movies list.
                             while (cursor.moveToNext()) {
+                                // Geting the values.
                                 int movieId             = cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_ID));
                                 String moviePosterUrl   = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL));
+
+                                Log.d(TAG, "Loading Favorite Movie::: Poster Url " + moviePosterUrl);
+
+                                // Adding to the list.
                                 itemList.add(new MovieItem.Builder().withMovieId(movieId)
-                                        .withMoviePosterUrl(MovieHelperUtils.imageBaseUrl.concat(moviePosterUrl))
+                                        .withMoviePosterUrl(moviePosterUrl)
                                         .build());
                             }
                             cursor.close();
@@ -196,7 +216,9 @@ public class HomeScreenActivity extends AppCompatActivity
 
                         return new ArrayList<>(itemList);
 
-                    // If we are not searching in "Favorite" Mode, then we call the WS.
+                    // ---------------------------------------------------
+                    // If we are NOT searching in "Favorite" Mode...
+                    // ---------------------------------------------------
                     default:
                         // Get the Url depending in the request mode (movies ordered by most_popular or top_rated).
                         URL weatherRequestUrl = NetworkUtils.buildUrl(orderMode,null);

@@ -3,17 +3,11 @@ package com.peterark.popularmovies.popularmovies.database.contracts;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.peterark.popularmovies.popularmovies.R;
-
-/**
- * Created by PETER on 25/9/2017.
- */
-
 public class FavoriteMoviesContract {
 
 
     public static final String CONTENT_AUTHORITY  = "com.peterark.popularmovies";
-    public static final Uri BASE_CONTENT_URI  = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI  = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_FAVORITE_MOVIES = "favoritemovies";
 
     public static final class FavoritesMoviesEntry implements BaseColumns {

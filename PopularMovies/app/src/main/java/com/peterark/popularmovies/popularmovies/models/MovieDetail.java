@@ -1,33 +1,25 @@
 package com.peterark.popularmovies.popularmovies.models;
 
-import com.peterark.popularmovies.popularmovies.Constants;
-import com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter.ReviewItem;
-import com.peterark.popularmovies.popularmovies.detailPanel.VideosAdapter.VideoItem;
-import com.peterark.popularmovies.popularmovies.utils.MovieHelperUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class MovieDetail {
 
     private final String movieTitle;
     private final String movieReleaseDate;
     private final String movieRating;
     private final String movieSynopsis;
-    private final String moviePosterUrl;
-    public boolean movieIsFavorite;
+    private final String moviePosterPath;
+    private boolean movieIsFavorite;
 
     private MovieDetail(String movieTitle,
                         String movieReleaseDate,
                         String movieRating,
                         String movieSynopsis,
-                        String moviePosterUrl,
+                        String moviePosterPath,
                         boolean movieIsFavorite) {
         this.movieTitle         = movieTitle;
         this.movieReleaseDate   = movieReleaseDate;
         this.movieRating        = movieRating;
         this.movieSynopsis      = movieSynopsis;
-        this.moviePosterUrl     = moviePosterUrl;
+        this.moviePosterPath    = moviePosterPath;
         this.movieIsFavorite    = movieIsFavorite;
     }
 
@@ -46,9 +38,10 @@ public class MovieDetail {
     public String movieSynopsis() {
         return this.movieSynopsis;
     }
-    public String moviePosterUrl() {
-        return this.moviePosterUrl;
+    public String moviePosterPath() {
+        return this.moviePosterPath;
     }
+    public boolean movieIsFavorite() {return this.movieIsFavorite;}
 
     // ---------------------------------
     //  Builder
@@ -59,7 +52,7 @@ public class MovieDetail {
         private String movieReleaseDate;
         private String movieRating;
         private String movieSynopsis;
-        private String moviePosterUrl;
+        private String moviePosterPath;
         private boolean movieIsFavorite;
 
         public Builder(){
@@ -67,7 +60,7 @@ public class MovieDetail {
             this.movieReleaseDate   = "0";
             this.movieRating        = "0.0";
             this.movieSynopsis      = "";
-            this.moviePosterUrl     = "";
+            this.moviePosterPath    = "";
             this.movieIsFavorite    = false;
         }
 
@@ -91,8 +84,8 @@ public class MovieDetail {
             return this;
         }
 
-        public Builder withMoviePosterUrl(String moviePosterUrl){
-            this.moviePosterUrl = moviePosterUrl;
+        public Builder withMoviePosterPath(String moviePosterPath){
+            this.moviePosterPath = moviePosterPath;
             return this;
         }
 
@@ -106,7 +99,7 @@ public class MovieDetail {
                                 movieReleaseDate,
                                 movieRating,
                                 movieSynopsis,
-                                moviePosterUrl,
+                                moviePosterPath,
                                 movieIsFavorite);
         }
     }

@@ -4,13 +4,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.peterark.popularmovies.popularmovies.database.contracts.FavoriteMoviesContract;
 
-/**
- * Created by PETER on 26/9/2017.
- */
+class PopularMoviesDbUtils {
 
-public class PopularMoviesDbUtils {
-
-    public static void createTable(SQLiteDatabase db, String tableName){
+    static void createTable(SQLiteDatabase db, String tableName){
 
         String CREATE_TABLE_SQL = null;
 

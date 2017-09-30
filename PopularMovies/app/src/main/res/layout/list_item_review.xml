@@ -20,21 +20,17 @@
                             tools:text="P"/>
 
                         <TextView
+                            style="@style/PopularMovies.TextView.Caption.ReviewTitle"
                             android:id="@+id/review_user_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             tools:text="Peter Arcentales"
-                            android:textColor="@color/black_primary"
                             />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/review_user_commentary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/PopularMovies.TextView.Caption.ReviewCommentary"
                     tools:text="This movie is one of the best in the year. I really recommend it. =)"
-                    android:textColor="@color/black_secondary"
-                    android:textSize="12sp"/>
+                    />
 
         </LinearLayout>
 

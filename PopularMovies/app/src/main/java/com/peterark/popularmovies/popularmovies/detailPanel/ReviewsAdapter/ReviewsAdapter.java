@@ -2,28 +2,20 @@ package com.peterark.popularmovies.popularmovies.detailPanel.ReviewsAdapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.peterark.popularmovies.popularmovies.R;
-import com.peterark.popularmovies.popularmovies.databinding.ListItemMovieBinding;
 import com.peterark.popularmovies.popularmovies.databinding.ListItemReviewBinding;
-import com.peterark.popularmovies.popularmovies.models.MovieItem;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsAdapterViewHolder>{
 
-    private final Context mContext;
     private List<ReviewItem> mItemList;
 
-    public ReviewsAdapter(Context context){
-        this.mContext = context;
+    public ReviewsAdapter(){
     }
 
 
@@ -67,6 +59,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsA
 
         // ---------------------------------------------------------------------------------------------------------
         // Source: A friend who took Udacity Nanodegree before, recomend me this way to implement Databinding in the Adapter
+        // He recomend me this link https://medium.com/google-developers/android-data-binding-recyclerview-db7c40d9f0e4
         // ---------------------------------------------------------------------------------------------------------
         ListItemReviewBinding mBinding;
 
