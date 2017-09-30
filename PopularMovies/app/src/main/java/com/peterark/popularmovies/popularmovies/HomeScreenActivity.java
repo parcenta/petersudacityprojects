@@ -3,6 +3,9 @@ package com.peterark.popularmovies.popularmovies;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -26,7 +29,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickHandler {
+public class HomeScreenActivity extends AppCompatActivity
+                        implements MoviesAdapter.OnMovieClickHandler,
+                                    LoaderManager.LoaderCallbacks<List<MovieItem>>{
 
     //
     private final String TAG = this.getClass().getSimpleName();
@@ -35,13 +40,10 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
 
     private ActivityHomeScreenBinding mBinding;
 
-    // Loading Movies AsyncTask
-    private LoadMoviesTask loadMoviesTask;
-
     // Values
     private String orderMode;
     private MoviesAdapter adapter;
-    private ArrayList<MovieItem> moviesList;
+    private List<MovieItem> moviesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,41 +68,25 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
         });
 
         // Check if there is a savedInstanceState. If there is then we recover the list.
-        if(savedInstanceState != null
-                && savedInstanceState.containsKey(ORDER_BY)
-                && savedInstanceState.containsKey(MOVIES_LIST)) {
-
-            Log.d(TAG,"savedInstance variable will be recovered");
-
-            // Get SavedInstance variables
+        if(savedInstanceState != null && savedInstanceState.containsKey(ORDER_BY))
             orderMode   = savedInstanceState.getString(ORDER_BY);
-            moviesList  = savedInstanceState.getParcelableArrayList(MOVIES_LIST);
-
-            // Now with the restored variables an update the UI (Action Bar and Recycler View)
-            refreshActionBarTitle();
-            adapter.setItemList(moviesList);
-        }else{
-            Log.d(TAG,"savedInstance variables are not available. We load the data from WS...");
-            // Set the Order Mode initially as Most Popular.
-            orderMode = Constants.ORDER_BY_MOST_POPULAR;
-
-            // If not, then load the movies from server
-            loadMovies();
-        }
+        else
+            orderMode = Constants.ORDER_BY_MOST_POPULAR; // Default
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getSupportLoaderManager().initLoader(0,null,this);
+    }
 
     private void loadMovies(){
         // Set in the ActionBar title, by what order are the movies.
         refreshActionBarTitle();
 
-        // Cancel previous request
-        cancelLoadingMovies();
-
-        // Load Movies.
-        loadMoviesTask = new LoadMoviesTask();
-        loadMoviesTask.execute();
+        // Restart the loader to load the movies.
+        getSupportLoaderManager().restartLoader(0,null,this);
     }
 
     private void refreshActionBarTitle(){
@@ -152,123 +138,128 @@ public class HomeScreenActivity extends AppCompatActivity implements MoviesAdapt
         MovieDetailActivity.launch(this,item.movieId());
     }
 
-    // --------------------------------------------------------
-    //  Loading Movies AsyncTask
-    // --------------------------------------------------------
-    private class LoadMoviesTask extends AsyncTask<Void,Void,ArrayList<MovieItem>> {
+    @Override
+    public Loader<List<MovieItem>> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<List<MovieItem>>(this){
 
-        @Override
-        protected void onPreExecute() {
+            List<MovieItem> cachedMovieItemList;
 
-            // Set the MoviesList to null.
-            moviesList = null;
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
 
-            // Empty (null) the Item List inside the adapter.
-            adapter.setItemList(null);
+                // Set the MoviesList to null.
+                moviesList = null;
 
-            // First Hide the RecyclerView and the Error Message.
-            mBinding.moviesRecyclerView.setVisibility(View.INVISIBLE);
-            mBinding.errorTextView.setVisibility(View.INVISIBLE);
-            mBinding.noMoviesFoundTextView.setVisibility(View.INVISIBLE);
+                // Empty (null) the Item List inside the adapter.
+                adapter.setItemList(null);
 
-            // Show Progress Bar.
-            mBinding.loadingMoviesProgressBar.setVisibility(View.VISIBLE);
-        }
+                // First Hide the RecyclerView and the Error Message.
+                mBinding.moviesRecyclerView.setVisibility(View.INVISIBLE);
+                mBinding.errorTextView.setVisibility(View.INVISIBLE);
+                mBinding.noMoviesFoundTextView.setVisibility(View.INVISIBLE);
 
-        @Override
-        protected ArrayList<MovieItem> doInBackground(Void... params) {
+                // Show Progress Bar.
+                mBinding.loadingMoviesProgressBar.setVisibility(View.VISIBLE);
 
-            List<MovieItem> itemList = new ArrayList<>();
 
-            switch (orderMode){
-                case Constants.ORDER_BY_FAVORITE:
+                if(cachedMovieItemList!=null)
+                    deliverResult(cachedMovieItemList);
+                else
+                    forceLoad();
+            }
 
-                    Cursor cursor = getContentResolver().query(FavoriteMoviesContract.FavoritesMoviesEntry.CONTENT_URI,null,null,null,null);
 
-                    if(cursor!=null) {
-                        while (cursor.moveToNext()) {
-                            int movieId = cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_ID));
-                            itemList.add(new MovieItem.Builder().withMovieId(movieId)
-                                    .withMoviePosterUrl("google.com")
-                                    .build());
+
+            @Override
+            public List<MovieItem> loadInBackground() {
+
+                List<MovieItem> itemList = new ArrayList<>();
+
+                switch (orderMode){
+
+                    // If OrderMode = "Favorites" then we check for the Movies list sved in the DB.
+                    case Constants.ORDER_BY_FAVORITE:
+
+                        Cursor cursor = getContentResolver().query(FavoriteMoviesContract.FavoritesMoviesEntry.CONTENT_URI,null,null,null,null);
+
+                        if(cursor!=null) {
+                            while (cursor.moveToNext()) {
+                                int movieId             = cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_ID));
+                                String moviePosterUrl   = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL));
+                                itemList.add(new MovieItem.Builder().withMovieId(movieId)
+                                        .withMoviePosterUrl(MovieHelperUtils.imageBaseUrl.concat(moviePosterUrl))
+                                        .build());
+                            }
+                            cursor.close();
                         }
-                        cursor.close();
-                    }
-
-                    return new ArrayList<>(itemList);
-
-                default:
-                    // Get the Url depending in the request mode (movies ordered by most_popular or top_rated).
-                    URL weatherRequestUrl = NetworkUtils.buildUrl(orderMode,null);
-
-                    try {
-                        String response = NetworkUtils
-                                .getResponseFromHttpUrl(HomeScreenActivity.this,weatherRequestUrl);
-
-                        if(response==null)
-                            return null;
-
-                        Log.d(TAG,"JsonString Response: " + response);
-
-                        itemList = MovieHelperUtils.getMovieListFromJson(response);
 
                         return new ArrayList<>(itemList);
 
-                    } catch (Exception e) {
-                        Log.d(TAG,"Exception was thrown when loading movies...");
-                        e.printStackTrace();
-                        return null;
-                    }
+                    // If we are not searching in "Favorite" Mode, then we call the WS.
+                    default:
+                        // Get the Url depending in the request mode (movies ordered by most_popular or top_rated).
+                        URL weatherRequestUrl = NetworkUtils.buildUrl(orderMode,null);
+
+                        try {
+                            String response = NetworkUtils
+                                    .getResponseFromHttpUrl(HomeScreenActivity.this,weatherRequestUrl);
+
+                            if(response==null)
+                                return null;
+
+                            Log.d(TAG,"JsonString Response: " + response);
+
+                            itemList = MovieHelperUtils.getMovieListFromJson(response);
+
+                            return new ArrayList<>(itemList);
+
+                        } catch (Exception e) {
+                            Log.d(TAG,"Exception was thrown when loading movies...");
+                            e.printStackTrace();
+                            return null;
+                        }
+                }
             }
 
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<MovieItem> itemList) {
-
-            // Hide the Progress Bar
-            mBinding.loadingMoviesProgressBar.setVisibility(View.INVISIBLE);
-
-            // Set the Adapter List.
-            moviesList = itemList;
-            adapter.setItemList(moviesList);
-
-            // Depending if the list was loaded correctly, we show it o
-            if(moviesList!=null) {
-                Log.d(TAG,"ItemList size: " + itemList.size());
-                if (moviesList.size()>0)
-                    mBinding.moviesRecyclerView.setVisibility(View.VISIBLE);
-                else
-                    mBinding.noMoviesFoundTextView.setVisibility(View.VISIBLE);
+            @Override
+            public void deliverResult(List<MovieItem> itemList) {
+                cachedMovieItemList = itemList;
+                super.deliverResult(itemList);
             }
-            else
-                mBinding.errorTextView.setVisibility(View.VISIBLE);
-
-        }
+        };
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        cancelLoadingMovies();
+    public void onLoadFinished(Loader<List<MovieItem>> loader, List<MovieItem> itemList) {
+        // Hide the Progress Bar
+        mBinding.loadingMoviesProgressBar.setVisibility(View.INVISIBLE);
+
+        // Set the Adapter List.
+        moviesList = itemList;
+        adapter.setItemList(moviesList);
+
+        // Depending if the list was loaded correctly, we show it o
+        if(moviesList!=null) {
+            Log.d(TAG,"ItemList size: " + itemList.size());
+            if (moviesList.size()>0)
+                mBinding.moviesRecyclerView.setVisibility(View.VISIBLE);
+            else
+                mBinding.noMoviesFoundTextView.setVisibility(View.VISIBLE);
+        }
+        else
+            mBinding.errorTextView.setVisibility(View.VISIBLE);
+
     }
 
-    private void cancelLoadingMovies(){
-        if(loadMoviesTask!=null)
-            loadMoviesTask.cancel(true);
+    @Override
+    public void onLoaderReset(Loader<List<MovieItem>> loader) {
+
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        // Avoid saving in the instanceState the resultantMovieList.
-        if(moviesList==null) {
-            Log.d(TAG,"Avoiding saving moviesList in savedInstanceState...");
-            super.onSaveInstanceState(outState);
-            return;
-        }
-
         outState.putString(ORDER_BY,orderMode);
-        outState.putParcelableArrayList(MOVIES_LIST,moviesList);
         super.onSaveInstanceState(outState);
     }
 }

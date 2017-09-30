@@ -23,7 +23,7 @@ public class PopularMoviesDbUtils {
                                 FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_SYNOPSIS       + " INTEGER NOT NULL," +
                                 FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_USER_RATING    + " REAL NOT NULL," +
                                 FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL     + " TEXT NOT NULL," +
-                                FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE   + " INTEGER NOT NULL);";
+                                FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE   + " TEXT NOT NULL);";
                 break;
         }
 

@@ -55,7 +55,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsA
 
         holder.mBinding.reviewUserName.setText(item.userName);
         holder.mBinding.reviewUserCommentary.setText(item.reviewCommentary);
-
+        holder.mBinding.reviewUserNameBadge.setText(item.userNameFirstLetter);
     }
 
     @Override

@@ -100,21 +100,8 @@ public class MovieDetailActivity extends AppCompatActivity
         // Get Intent parameters variables
         getParameters();
 
-        // Set Try again action when movie is not loaded.
-        mBinding.errorTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportLoaderManager().restartLoader(LOADER_ID_FOR_MOVIE_DETAIL_BASIC_INFO_LOAD,null,movieDetailResultLoaderListener);
-            }
-        });
-
-        // Set Mark as favorite Action.
-        mBinding.markAsFavoriteAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportLoaderManager().restartLoader(LOADER_ID_FOR_MOVIE_MARK_AS_FAVORITE,null,movieMarkAsFavoriteResultLoaderListener);
-            }
-        });
+        // Set some onClick events to some elements in the layout.
+        setLayoutOnClickEvents();
 
         // Setting Video(Trailers,etc) Adapter
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
@@ -213,6 +200,39 @@ public class MovieDetailActivity extends AppCompatActivity
         mBinding.movieDetailContainer.setVisibility(View.VISIBLE);
     }
 
+    private void setLayoutOnClickEvents(){
+        // Set Try again action when movie is not loaded.
+        mBinding.errorTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportLoaderManager().restartLoader(LOADER_ID_FOR_MOVIE_DETAIL_BASIC_INFO_LOAD,null,movieDetailResultLoaderListener);
+            }
+        });
+
+        // Set Mark as favorite Action.
+        mBinding.errorOccurredLoadingVideosTextview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportLoaderManager().restartLoader(LOADER_ID_FOR_MOVIE_DETAIL_VIDEOS_LOAD,null,movieDetailVideosLoaderListener);
+            }
+        });
+
+        // Set Mark as favorite Action.
+        mBinding.errorOccurredLoadingReviewsTextview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportLoaderManager().restartLoader(LOADER_ID_FOR_MOVIE_DETAIL_REVIEWS_LOAD,null,movieDetailReviewsLoaderListener);
+            }
+        });
+
+        // Set Mark as favorite Action.
+        mBinding.markAsFavoriteAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportLoaderManager().restartLoader(LOADER_ID_FOR_MOVIE_MARK_AS_FAVORITE,null,movieMarkAsFavoriteResultLoaderListener);
+            }
+        });
+    }
 
 
     /* -----------------------------------------------------------------------------------------------------------------
@@ -523,7 +543,7 @@ public class MovieDetailActivity extends AppCompatActivity
                         values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_NAME,movieDetailDetail.movieTitle());
                         values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_SYNOPSIS,movieDetailDetail.movieSynopsis());
                         values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_USER_RATING,Double.valueOf(movieDetailDetail.movieRating()));
-                        values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE,Integer.valueOf(movieDetailDetail.movieReleaseDate()));
+                        values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE,movieDetailDetail.movieReleaseDate());
                         values.put(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL,"google.com");
 
                         Uri returnUri = getContentResolver().insert(FavoriteMoviesContract.FavoritesMoviesEntry.CONTENT_URI, values);

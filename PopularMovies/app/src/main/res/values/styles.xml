@@ -53,4 +53,13 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="PopularMovies.TextView.Caption.Bubble">
+        <item name="android:layout_width">28sp</item>
+        <item name="android:layout_height">28sp</item>
+        <item name="android:background">@drawable/user_circle_background</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white_primary</item>
+        <item name="android:layout_marginRight">6dp</item>
+    </style>
+
 </resources>

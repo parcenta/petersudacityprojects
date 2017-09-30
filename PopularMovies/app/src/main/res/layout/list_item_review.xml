@@ -8,13 +8,25 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/review_user_name"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Peter Arcentales"
-                    android:textColor="@color/black_primary"
-                    />
+                    android:layout_marginBottom="4dp"
+                    android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/review_user_name_badge"
+                            style="@style/PopularMovies.TextView.Caption.Bubble"
+                            tools:text="P"/>
+
+                        <TextView
+                            android:id="@+id/review_user_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Peter Arcentales"
+                            android:textColor="@color/black_primary"
+                            />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/review_user_commentary"

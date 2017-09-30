@@ -25,7 +25,7 @@ public class MovieHelperUtils {
 
     private static final String TAG = MovieHelperUtils.class.getSimpleName();
 
-    private final static String imageBaseUrl = "http://image.tmdb.org/t/p/w185";
+    public final static String imageBaseUrl = "http://image.tmdb.org/t/p/w185";
     private final static String imageBigBaseUrl = "http://image.tmdb.org/t/p/w342";
 
     public static List<MovieItem> getMovieListFromJson(String movieJsonString) throws JSONException {
@@ -87,7 +87,7 @@ public class MovieHelperUtils {
     public static MovieDetail getMovieDetailFromCursor(Cursor cursor){
 
         String movieTitle       = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_NAME));
-        String movieReleaseDate = String.valueOf(cursor.getInt(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE)));
+        String movieReleaseDate = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_RELEASE_DATE));
         double movieRating      = cursor.getDouble(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_USER_RATING));
         String movieSynopsis    = cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_SYNOPSIS));
         String moviePosterUrl   = imageBigBaseUrl.concat(cursor.getString(cursor.getColumnIndex(FavoriteMoviesContract.FavoritesMoviesEntry.COLUMN_MOVIE_POSTER_URL)));
