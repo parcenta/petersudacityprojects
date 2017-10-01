@@ -37,6 +37,7 @@ public class HomeScreenActivity extends AppCompatActivity
 
     // Values
     private String orderMode;
+    private GridLayoutManager layoutManager;
     private MoviesAdapter adapter;
     private List<MovieItem> moviesList;
 
@@ -48,7 +49,7 @@ public class HomeScreenActivity extends AppCompatActivity
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_home_screen);
 
         // Setting adapter
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        layoutManager = new GridLayoutManager(this, 2);
         mBinding.moviesRecyclerView.setLayoutManager(layoutManager);
         mBinding.moviesRecyclerView.setHasFixedSize(true);
         adapter = new MoviesAdapter(this,this);
@@ -77,11 +78,8 @@ public class HomeScreenActivity extends AppCompatActivity
         super.onResume();
         refreshActionBarTitle();
 
-        // If we were displaying favorites movies, then we restart the loader. Just in case the user "un-favorite" a favorite movie.
-        if(orderMode.equals(Constants.ORDER_BY_FAVORITE))
-            getSupportLoaderManager().restartLoader(0,null,this);
-        else
-            getSupportLoaderManager().initLoader(0,null,this);
+        // Initiating the Loader.
+        getSupportLoaderManager().initLoader(0,null,this);
     }
 
     // Method to reload all again the movies.
@@ -89,6 +87,7 @@ public class HomeScreenActivity extends AppCompatActivity
         // Set in the ActionBar title, by what order are the movies.
         refreshActionBarTitle();
 
+        // Restarting the Loader.
         getSupportLoaderManager().restartLoader(0,null,this);
     }
 
@@ -159,8 +158,9 @@ public class HomeScreenActivity extends AppCompatActivity
                 // Show Progress Bar.
                 mBinding.loadingMoviesProgressBar.setVisibility(View.VISIBLE);
 
-
-                if(cachedMovieItemList!=null) {
+                // If there is a cachedMovieList and the order IS NOT in Favortite movde, then just deliver it.
+                // Im always forcing the load when in favorite mode, because the user could unfavorite a movie.
+                if(cachedMovieItemList!=null && !orderMode.equals(Constants.ORDER_BY_FAVORITE)) {
                     Log.d(TAG, "onStartLoading: Delivering result. Not force loading..");
 
                     deliverResult(cachedMovieItemList);
